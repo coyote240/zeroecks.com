@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css"
+            href="{{ static_url('css/style.css') }}"/>
+    </head>
+    <body>
+        <div>{{ user_name }}</div>
+        <div>{{ pubkey.keyid }}</div>
+        <div>{{ pubkey.fingerprint }}</div>
+        <div>{{ expiry }}</div>
+        <div>{{ pubkey }}</div>
+
+        <ul>
+            {% for uid, sig in sigs.items() %}
+            <li>{{ uid }}</li>
+            <ul>
+                {% for keyid in sig %}
+                    <li>{{ keyid }}</li>
+                {% end %}
+            </ul>
+            {% end %}
+        </ul>
+    </body>
+</html>
