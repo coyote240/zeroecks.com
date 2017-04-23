@@ -1,24 +1,19 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css"
-            href="{{ static_url('css/style.css') }}"/>
-    </head>
-    <body>
-        <form method="post" action="">
-            {% module xsrf_form_html() %}
-            <fieldset>
-                <label for="user_name">user name</label>
-                <input id="user_name" name="user_name" type="text"/>
-            </fieldset>
-            <fieldset>
-                <label for="armored_key">armored GPG key</label>
-                <textarea id="armored_key" name="armored_key"
-                    rows="55" cols="70"></textarea>
-            </fieldset>
-            <fieldset>
-                <input type="submit"/>
-            </fieldset>
-        </form>
-    </body>
-</html>
+{% extends 'base.tmpl.html' %}
+
+{% block content %}
+<form method="post" action="">
+    {% module xsrf_form_html() %}
+    <fieldset>
+        <label for="user_name">user name</label>
+        <input id="user_name" name="user_name" type="text"/>
+    </fieldset>
+    <fieldset>
+        <label for="armored_key">armored GPG key</label>
+        <textarea id="armored_key" name="armored_key"
+            rows="55" cols="70"></textarea>
+    </fieldset>
+    <fieldset>
+        <input type="submit"/>
+    </fieldset>
+</form>
+{% end %}

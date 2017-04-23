@@ -19,9 +19,7 @@
             </nav>
         </header>
         <section class="main-content">
-            {% for i in range(15) %}
-            {% module Article(i) %}
-            {% end %}
+            {% block content %}Nothing here{% end %}
         </section>
         <footer class="site-main">
             <div class="eff-member-badge">
