@@ -1,3 +1,80 @@
+body {
+    margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    font-family: sans-serif;
+}
+
+ul {
+    list-style: none;
+    margin: 0; padding: 0;
+}
+
+header.site-main {
+    position: fixed;
+    top: 0; right: 0;
+    padding: 1rem;
+    border: 1px dotted #708090;
+    border-width: 0 0 1px 1px;
+    text-align: right;
+    overflow: scroll;
+}
+
+header.site-main h1 {
+    margin: 0; padding: 0;
+}
+
+header.site-main h1,
+header.site-main .essentials a {
+    font-family: Impact, sans-serif;
+}
+
+header.site-main .essentials a {
+    text-decoration: none;
+    color: #708090;
+}
+
+header.site-main nav {
+}
+
+header.site-main nav ul {
+    margin: 5px 0px;
+}
+
+footer.site-main {
+    position: fixed;
+    bottom: 0; right: 0;
+    padding: 1rem;
+}
+
+footer .eff-member-badge img {
+    width: 100px;
+}
+
+section.main-content {
+    padding: 1rem;
+}
+
+section.main-content article {
+    padding: 5px;
+    font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+}
+
+section.main-content article header h1 {
+    margin: 0;
+    font-family: 'Arial Black', sans-serif;
+}
+
+section.main-content article header time {
+    font-size: .85rem;
+    font-style: italic;
+    font-family: serif;
+    color: #708090;
+}
+
+section.main-content article p {
+}
+
 fieldset {
     border: none;
 }

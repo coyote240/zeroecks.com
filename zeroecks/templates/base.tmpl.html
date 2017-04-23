@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>zeroecks.com</title>
+        <link rel="stylesheet" type="text/css"
+                               href="{{ static_url('css/style.css') }}"/>
+    </head>
+    <body>
+        <header class="site-main">
+            <h1>zeroecks.com</h1>
+            <ul class="essentials">
+                <li><a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x439943DBA05D9F36">0x439943dba05d9f36</a></li>
+                <li><a href="https://github.com/coyote240">coyote240 @ GitHub</a></li>
+            </ul>
+            <nav class="site-main">
+                <ul>
+                    <li><a href="/trust">trust</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section class="main-content">
+            {% for i in range(15) %}
+            {% module Article(i) %}
+            {% end %}
+        </section>
+        <footer class="site-main">
+            <div class="eff-member-badge">
+                <a href="https://www.eff.org">
+                    <img alt="EFF Member" src="https://www.eff.org/files/2016/11/01/2017mb.png"/>
+                </a>
+            </div>
+            <div class="copyright">
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+                    <img alt="Creative Commons License" 
+                        src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+                </a>
+            </div>
+        </footer>
+    </body>
+</html>
