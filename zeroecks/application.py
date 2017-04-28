@@ -26,7 +26,7 @@ class Application(tornadobase.application.Application):
 
         self.handlers = [
             (r'/', handlers.IndexHandler),
-            (r'/trust', handlers.TrustHandler, {'gpg': self.gpg}),
+            #(r'/trust', handlers.TrustHandler, {'gpg': self.gpg}),
             (r'/articles/([0-9]+)', handlers.ArticleHandler),
             (r'/assets/', handlers.StaticHandler)]
 

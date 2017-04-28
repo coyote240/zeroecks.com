@@ -2,8 +2,14 @@
 <html>
     <head>
         <title>zeroecks.com</title>
-        <link rel="stylesheet" type="text/css"
-                               href="{{ static_url('css/style.css') }}"/>
+        <link rel="stylesheet" 
+              type="text/css"
+              media="(min-width: 320px)"
+              href="{{ static_url('css/mobile.css') }}"/>
+        <link rel="stylesheet" 
+              type="text/css"
+              media="(min-width: 768px)"
+              href="{{ static_url('css/style.css') }}"/>
     </head>
     <body>
         <header class="site-main">
