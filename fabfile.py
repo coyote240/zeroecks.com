@@ -1,7 +1,10 @@
-from fabric.api import run, env, task
+from fabric.api import env, task, run, sudo, cd
 
 
 env.use_ssh_config = True
+env.project_name = 'zeroecks'
+env.path = '/var/www/{project_name}'.format(**env)
+env.virtualenv_path = '/var/env/{project_name}'.format(**env)
 
 '''
 activate virtual environment
@@ -14,10 +17,30 @@ restart nginx
 
 
 @task
-def install_tools():
-    pass
+def setup():
+    """
+    Setup python environment
+    """
+    sudo('apt-get install -y python3-setuptools')
+    sudo('easy_install pip')
+    sudo('pip install virtualenv')
+    sudo('mkdir -p {virtualenv_path}'.format(**env))
+    with cd(env.virtualenv_path):
+        run('virtualenv -p python3 {virtualenv_path}'.format(**env), pty=True)
 
 
 @task
-def install_nginx_config():
+def deploy():
+    pass
+
+
+def upload_archive():
+    pass
+
+
+def install_site():
+    pass
+
+
+def install_requirements():
     pass

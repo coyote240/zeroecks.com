@@ -20,7 +20,11 @@
             </ul>
             <nav class="site-main">
                 <ul>
-                    <li><a href="/trust">trust</a></li>
+                    <li><a href="{{ reverse_url('Home') }}">home</a></li>
+                    <li><a href="{{ reverse_url('Trust') }}">trust</a></li>
+                    {% if not current_user %}
+                    <li><a href="{{ reverse_url('Login') }}">login</a></li>
+                    {% end %}
                 </ul>
             </nav>
         </header>

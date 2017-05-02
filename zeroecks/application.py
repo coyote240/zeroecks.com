@@ -6,6 +6,9 @@ import tornadobase.application
 import handlers
 import modules
 
+from tornado.web import URLSpec
+from tornado.options import define
+
 
 class Application(tornadobase.application.Application):
 
@@ -14,6 +17,14 @@ class Application(tornadobase.application.Application):
         self.gpg = gnupg.GPG(homedir=self.homedir.name)
 
         super().__init__()
+
+    def init_options(self):
+
+        define('dbname')
+        define('dbuser')
+        define('dbpass')
+
+        super().init_options()
 
     def init_settings(self):
         settings = super().init_settings()
@@ -25,10 +36,22 @@ class Application(tornadobase.application.Application):
     def init_handlers(self):
 
         self.handlers = [
-            (r'/', handlers.IndexHandler),
-            #(r'/trust', handlers.TrustHandler, {'gpg': self.gpg}),
-            (r'/articles/([0-9]+)', handlers.ArticleHandler),
-            (r'/assets/', handlers.StaticHandler)]
+            URLSpec(r'/',
+                    handlers.IndexHandler,
+                    name='Home'),
+            URLSpec(r'/trust',
+                    handlers.TrustHandler,
+                    {'gpg': self.gpg},
+                    name='Trust'),
+            URLSpec(r'/articles/([0-9]+)',
+                    handlers.ArticleHandler,
+                    name='Articles'),
+            URLSpec(r'/assets/',
+                    handlers.StaticHandler,
+                    name='Assets'),
+            URLSpec(r'/login',
+                    handlers.AuthHandler,
+                    name='Login')]
 
 
 if __name__ == '__main__':

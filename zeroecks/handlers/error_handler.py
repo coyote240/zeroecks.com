@@ -1,5 +1,5 @@
 import http.client
-from tornadobase.handlers import BaseHandler
+from handlers import BaseHandler
 
 
 class NotFoundHandler(BaseHandler):

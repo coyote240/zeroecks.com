@@ -1,4 +1,4 @@
-from tornadobase.handlers import BaseHandler
+from handlers import BaseHandler
 
 
 class ArticleHandler(BaseHandler):

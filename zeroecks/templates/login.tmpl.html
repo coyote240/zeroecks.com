@@ -1,0 +1,12 @@
+{% extends 'base.tmpl.html' %}
+
+{% block content %}
+<form method="post" action="{{ reverse_url('Login') }}">
+    {% module xsrf_form_html() %}
+    <label for="userid">user id:</label>
+    <input type="text" id="userid" name="userid"></input>
+    <label for="password">password:</label>
+    <input type="password" id="password" name="password"></input>
+    <input type="submit"/>
+</form>
+{% end %}

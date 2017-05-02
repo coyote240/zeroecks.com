@@ -1,13 +1,14 @@
 import datetime
 import logging
 from tornado.util import ObjectDict
-from tornadobase.handlers import BaseHandler
+from handlers import BaseHandler
 
 
 class TrustHandler(BaseHandler):
 
     def initialize(self, gpg):
         self.gpg = gpg
+        super().initialize()
 
     def get(self):
         self.render('trust.tmpl.html')
