@@ -12,10 +12,29 @@ class BaseHandler(tornadobase.handlers.BaseHandler):
                                       password=options.dbpass)
         self.redis = redis.StrictRedis(host='localhost',
                                        port=6379,
-                                       db=0)
+                                       db=0,
+                                       decode_responses=True)
 
     def get_current_user(self):
         session_id = self.get_secure_cookie('session')
         if session_id is not None:
+            self.redis.expire(session_id, options.session_timeout)
             return self.redis.hget(session_id, 'userid')
         return None
+
+    def write_error(self, status_code, **kwargs):
+        (http_error, error, stacktrace) = kwargs['exc_info']
+
+        self.render('errors/general.html',
+                    status_code=status_code,
+                    reason=error.reason)
+
+    @property
+    def session(self):
+        session_id = self.get_secure_cookie('session')
+        if session_id is not None:
+            return self.redis.hgetall(session_id)
+        return None
+
+    def on_finish(self):
+        self.dbref.close()

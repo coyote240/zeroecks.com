@@ -1,0 +1,37 @@
+{% extends 'base.tmpl.html' %}
+
+{% block content %}
+<form class="profile-form">
+    <label for="userid">user id</label>
+    <input type="text" value="{{ userid }}"/>
+
+    <label for="keyid">key id</label>
+    <input type="text" value="{{ keyid }}"/>
+
+    <div class="armored_key">{{ armored_key }}</div>
+
+    <label for="verfied">verified</label>
+    <input type="checkbox"
+           id="verified"
+           name="verified"
+           checked="{{ verified and 'true' }}"/>
+
+    <label for="date_verified">verified on</label>
+    <input type="text"
+           id="date_verified"
+           name="date_verified"
+           value="{{ date_verified }}"/>
+
+    <label for="date_created">created on</label>
+    <input type="text"
+           id="date_created"
+           name="date_created"
+           value="{{ date_created }}"/>
+
+    <label for="last_login">last login</label>
+    <input type="text"
+           id="last_login"
+           name="last_login"
+           value="{{ last_login }}"/>
+</form>
+{% end %}

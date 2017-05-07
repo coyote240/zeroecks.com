@@ -24,6 +24,11 @@
                     <li><a href="{{ reverse_url('Trust') }}">trust</a></li>
                     {% if not current_user %}
                     <li><a href="{{ reverse_url('Login') }}">login</a></li>
+                    {% else %}
+                    <li><a href="{{ reverse_url('Logout') }}">log out</a></li>
+                    {% end %}
+                    {% if current_user is not None %}
+                    <li><a href="{{ reverse_url('Profile') }}">profile</a></li>
                     {% end %}
                 </ul>
             </nav>
@@ -34,13 +39,12 @@
         <footer class="site-main">
             <div class="eff-member-badge">
                 <a href="https://www.eff.org">
-                    <img alt="EFF Member" src="https://www.eff.org/files/2016/11/01/2017mb.png"/>
+                    <img alt="EFF Member" src="{{ static_url('img/2017mb.png') }}"/>
                 </a>
             </div>
             <div class="copyright">
-                <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
-                    <img alt="Creative Commons License" 
-                        src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+                <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+                    <img src="{{ static_url('img/by-sa.svg') }}" alt="Creative Commons License"/>
                 </a>
             </div>
         </footer>

@@ -20,9 +20,10 @@ class Application(tornadobase.application.Application):
 
     def init_options(self):
 
-        define('dbname')
-        define('dbuser')
-        define('dbpass')
+        define('dbname', type=str)
+        define('dbuser', type=str)
+        define('dbpass', type=str)
+        define('session_timeout', type=int, default=86400)
 
         super().init_options()
 
@@ -51,7 +52,14 @@ class Application(tornadobase.application.Application):
                     name='Assets'),
             URLSpec(r'/login',
                     handlers.AuthHandler,
-                    name='Login')]
+                    name='Login'),
+            URLSpec(r'/logout',
+                    handlers.AuthHandler,
+                    {'action': 'logout'},
+                    name='Logout'),
+            URLSpec(r'/profile',
+                    handlers.ProfileHandler,
+                    name='Profile')]
 
 
 if __name__ == '__main__':

@@ -7,12 +7,12 @@ env.path = '/var/www/{project_name}'.format(**env)
 env.virtualenv_path = '/var/env/{project_name}'.format(**env)
 
 '''
+install redis, postgres, nginx
+install nginx.conf, redis.conf, etc.
 activate virtual environment
-nginx.conf
 pull code
 install dependencies
-restart app
-restart nginx
+restart services
 '''
 
 

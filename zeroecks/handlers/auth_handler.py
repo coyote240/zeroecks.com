@@ -1,13 +1,26 @@
 import uuid
 import hashlib
+from tornado.web import HTTPError
+from tornado.options import options
 from handlers import BaseHandler
 
 
 class AuthHandler(BaseHandler):
 
+    def initialize(self, action=None):
+        self.action = action
+        super().initialize()
+
     def get(self):
+        if self.action is 'logout':
+            self.clear_cookie('session')
+            self.redirect('/')
+            return
+
         if self.current_user:
             self.redirect('/')
+            return
+
         self.render('login.tmpl.html')
 
     def post(self):
@@ -20,10 +33,11 @@ class AuthHandler(BaseHandler):
             (userid, fingerprint) = res
             self.set_session(userid, fingerprint)
             self.redirect('/')
+            self.finish()
 
-        self.set_status(401, reason='Unauthorized')
-        self.render('login.tmpl.html')
-        self.finish()
+        raise HTTPError(status_code=401,
+                        log_message='Unauthorized',
+                        reason='User name or password are incorrect')
 
     def check_creds(self, userid, password):
         bpasswd = bytes(password, 'utf-8')
@@ -44,8 +58,9 @@ class AuthHandler(BaseHandler):
         return res
 
     def set_session(self, userid, fingerprint):
-        sessionid = str(uuid.uuid4())
-        self.redis.hmset(sessionid, {
+        session_id = str(uuid.uuid4())
+        self.redis.hmset(session_id, {
             'userid': userid,
             'fingerprint': fingerprint})
-        self.set_secure_cookie('session', sessionid)
+        self.redis.expire(session_id, options.session_timeout)
+        self.set_secure_cookie('session', session_id)
