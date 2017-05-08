@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% from modules.navigation_module import LOGGED_IN, LOGGED_OUT %}
 <html>
     <head>
         <title>zeroecks.com</title>
@@ -18,20 +19,14 @@
                 <li><a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x439943DBA05D9F36">0x439943dba05d9f36</a></li>
                 <li><a href="https://github.com/coyote240">coyote240 @ GitHub</a></li>
             </ul>
-            <nav class="site-main">
-                <ul>
-                    <li><a href="{{ reverse_url('Home') }}">home</a></li>
-                    <li><a href="{{ reverse_url('Trust') }}">trust</a></li>
-                    {% if not current_user %}
-                    <li><a href="{{ reverse_url('Login') }}">login</a></li>
-                    {% else %}
-                    <li><a href="{{ reverse_url('Logout') }}">log out</a></li>
-                    {% end %}
-                    {% if current_user is not None %}
-                    <li><a href="{{ reverse_url('Profile') }}">profile</a></li>
-                    {% end %}
-                </ul>
-            </nav>
+
+            {% module Navigation(
+                    current_user,
+                    ('Home', 'home', LOGGED_IN | LOGGED_OUT),
+                    ('Login', 'login', LOGGED_OUT),
+                    ('Logout', 'logout', LOGGED_IN),
+                    ('Profile', 'profile', LOGGED_IN))%}
+
         </header>
         <section class="main-content">
             {% block content %}Nothing here{% end %}

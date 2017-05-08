@@ -1,5 +1,6 @@
 import datetime
 import logging
+from tornado.web import authenticated
 from tornado.util import ObjectDict
 from handlers import BaseHandler
 
@@ -10,9 +11,11 @@ class TrustHandler(BaseHandler):
         self.gpg = gpg
         super().initialize()
 
+    @authenticated
     def get(self):
         self.render('trust.tmpl.html')
 
+    @authenticated
     def post(self):
         user_name = self.get_argument('user_name')
         armored_key = self.get_argument('armored_key')

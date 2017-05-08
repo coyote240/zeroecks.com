@@ -1,9 +1,10 @@
-from tornado.web import HTTPError
+from tornado.web import HTTPError, authenticated
 from handlers import BaseHandler
 
 
 class ProfileHandler(BaseHandler):
 
+    @authenticated
     def get(self):
         profile = self.get_profile()
         if profile is not None:
@@ -20,7 +21,9 @@ class ProfileHandler(BaseHandler):
                         last_login=last_login)
             return
 
-        raise HTTPError(status_code=404, log_message='Profile not found')
+        raise HTTPError(status_code=404,
+                        log_message='Profile not found',
+                        reason='Profile not found')
 
     def get_profile(self):
         cursor = self.dbref.cursor()

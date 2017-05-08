@@ -1,0 +1,9 @@
+<nav class="site-main">
+    <ul>
+    {% for link, label, state in nav %}
+        {% if user_state & state %}
+        <li><a href="{{ reverse_url(link) }}">{{ label }}</a></li>
+        {% end %}
+    {% end %}
+    </ul>
+</nav>

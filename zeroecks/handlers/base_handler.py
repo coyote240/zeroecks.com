@@ -15,8 +15,15 @@ class BaseHandler(tornadobase.handlers.BaseHandler):
                                        db=0,
                                        decode_responses=True)
 
-    def get_current_user(self):
+    @property
+    def session(self):
         session_id = self.get_secure_cookie('session')
+        if session_id is not None:
+            return self.redis.hgetall(session_id)
+        return None
+
+    def get_current_user(self):
+        session_id = self.get_secure_cookie('__id')
         if session_id is not None:
             self.redis.expire(session_id, options.session_timeout)
             return self.redis.hget(session_id, 'userid')
@@ -24,17 +31,14 @@ class BaseHandler(tornadobase.handlers.BaseHandler):
 
     def write_error(self, status_code, **kwargs):
         (http_error, error, stacktrace) = kwargs['exc_info']
+        if not hasattr(error, 'reason'):
+            reason = 'Something went wrong.'
+        else:
+            reason = error.reason
 
         self.render('errors/general.html',
                     status_code=status_code,
-                    reason=error.reason)
-
-    @property
-    def session(self):
-        session_id = self.get_secure_cookie('session')
-        if session_id is not None:
-            return self.redis.hgetall(session_id)
-        return None
+                    reason=reason)
 
     def on_finish(self):
         self.dbref.close()

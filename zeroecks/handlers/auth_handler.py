@@ -13,7 +13,7 @@ class AuthHandler(BaseHandler):
 
     def get(self):
         if self.action is 'logout':
-            self.clear_cookie('session')
+            self.clear_cookie('__id')
             self.redirect('/')
             return
 
@@ -26,14 +26,15 @@ class AuthHandler(BaseHandler):
     def post(self):
         userid = self.get_argument('userid')
         password = self.get_argument('password')
+        dest = self.get_argument('next', default='/')
 
         res = self.check_creds(userid, password)
 
         if res is not None:
             (userid, fingerprint) = res
             self.set_session(userid, fingerprint)
-            self.redirect('/')
-            self.finish()
+            self.redirect(dest)
+            return
 
         raise HTTPError(status_code=401,
                         log_message='Unauthorized',
@@ -63,4 +64,6 @@ class AuthHandler(BaseHandler):
             'userid': userid,
             'fingerprint': fingerprint})
         self.redis.expire(session_id, options.session_timeout)
-        self.set_secure_cookie('session', session_id)
+        self.set_secure_cookie('__id', session_id,
+                               secure=True,
+                               httponly=True)
