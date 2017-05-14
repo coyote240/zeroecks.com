@@ -4,8 +4,20 @@ from handlers import BaseHandler
 
 class ArticleHandler(BaseHandler):
 
-    def get(self, id=None):
-        self.render('article.tmpl.html', article=id)
+    async def get(self, id=None):
+
+        with self.dbref.cursor() as cursor:
+            cursor.execute('''
+            SELECT  author, content
+            FROM    articles.articles
+            WHERE   id = %s
+            ''', (id, ))
+
+            (author, content) = cursor.fetchone()
+
+        self.render('article.tmpl.html',
+                    id=id,
+                    content=content)
 
 
 class NewArticleHandler(BaseHandler):
@@ -16,7 +28,8 @@ class NewArticleHandler(BaseHandler):
 
     @authenticated
     async def post(self):
-        article = self.request.body
+        self.warn(self.request.files)
+        article = str(self.request.body)
 
         with self.dbref.cursor() as cursor:
             cursor.execute('''

@@ -3,5 +3,15 @@ from handlers import BaseHandler
 
 class IndexHandler(BaseHandler):
 
-    def get(self):
-        self.render('index.tmpl.html')
+    async def get(self):
+
+        with self.dbref.cursor() as cursor:
+            cursor.execute('''
+            SELECT id, author, content
+            FROM articles.articles
+            ''')
+
+            articles = cursor.fetchall()
+
+        self.render('index.tmpl.html',
+                    articles=articles)
