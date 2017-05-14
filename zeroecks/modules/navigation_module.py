@@ -8,9 +8,9 @@ class Navigation(UIModule):
 
     def render(self, current_user, *args):
         if current_user is not None:
-            user_state = 1
+            user_state = LOGGED_IN
         else:
-            user_state = 2
+            user_state = LOGGED_OUT
 
         return self.render_string(
             'navigation.tmpl.html',

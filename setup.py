@@ -9,5 +9,6 @@ setup(
     license='MIT',
     install_requires=[
         'tornado>=4',
-        'tornadobase==0.1'
-    ])
+        'tornadobase==0.1.2'
+    ],
+    tests_require=['nose'])

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% from modules.navigation_module import LOGGED_IN, LOGGED_OUT %}
 <html>
     <head>
         <title>zeroecks.com</title>
@@ -20,12 +19,15 @@
                 <li><a href="https://github.com/coyote240">coyote240 @ GitHub</a></li>
             </ul>
 
+            {% from modules.navigation_module import LOGGED_IN, LOGGED_OUT %}
             {% module Navigation(
                     current_user,
                     ('Home', 'home', LOGGED_IN | LOGGED_OUT),
                     ('Login', 'login', LOGGED_OUT),
                     ('Logout', 'logout', LOGGED_IN),
-                    ('Profile', 'profile', LOGGED_IN))%}
+                    ('Profile', 'profile', LOGGED_IN),
+                    ('NewArticle', 'add content', LOGGED_IN))
+            %}
 
         </header>
         <section class="main-content">

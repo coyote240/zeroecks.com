@@ -23,12 +23,12 @@ class AuthHandler(BaseHandler):
 
         self.render('login.tmpl.html')
 
-    def post(self):
+    async def post(self):
         userid = self.get_argument('userid')
         password = self.get_argument('password')
         dest = self.get_argument('next', default='/')
 
-        res = self.check_creds(userid, password)
+        res = await self.check_creds(userid, password)
 
         if res is not None:
             (userid, fingerprint) = res
@@ -40,7 +40,7 @@ class AuthHandler(BaseHandler):
                         log_message='Unauthorized',
                         reason='User name or password are incorrect')
 
-    def check_creds(self, userid, password):
+    async def check_creds(self, userid, password):
         bpasswd = bytes(password, 'utf-8')
         hashed_password = hashlib.sha256(bpasswd).hexdigest()
 

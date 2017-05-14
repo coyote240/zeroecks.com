@@ -66,3 +66,11 @@ section.main-content article footer a {
     text-align: right;
     display: block;
 }
+
+.dropzone {
+    width: 85%;
+    background-color: #DCDCDC;
+    color: #AAAAAA;
+    padding: 2rem;
+    text-align: center;
+}
