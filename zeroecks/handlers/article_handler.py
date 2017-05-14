@@ -16,7 +16,20 @@ class NewArticleHandler(BaseHandler):
 
     @authenticated
     async def post(self):
-        pass
+        article = self.request.body
+
+        with self.dbref.cursor() as cursor:
+            cursor.execute('''
+            INSERT INTO articles.articles (author, content)
+            values (%s, %s)
+            RETURNING id
+            ''', (self.current_user, article))
+
+            next_id = cursor.fetchone()[0]
+
+        self.write({
+            'id': next_id
+        })
 
     @authenticated
     async def put(self):

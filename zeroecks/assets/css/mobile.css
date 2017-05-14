@@ -73,4 +73,6 @@ section.main-content article footer a {
     color: #AAAAAA;
     padding: 2rem;
     text-align: center;
+
+    border-bottom: 2px solid #708090;
 }

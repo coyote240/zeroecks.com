@@ -10,6 +10,8 @@ class BaseHandler(tornadobase.handlers.BaseHandler):
         self.dbref = psycopg2.connect(dbname=options.dbname,
                                       user=options.dbuser,
                                       password=options.dbpass)
+        self.dbref.autocommit = True
+
         self.redis = redis.StrictRedis(host='localhost',
                                        port=6379,
                                        db=0,

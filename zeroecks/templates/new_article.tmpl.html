@@ -1,13 +1,5 @@
 {% extends 'base.tmpl.html' %}
 
 {% block content %}
-<div class="dropzone">
-    <p>Drag one or more files to upload.</p>
-    <em>Acceptable file types: Textile</em>
-    <p>or</p>
-    <form method="post">
-        {% module xsrf_form_html() %}
-        <input type="file"/>
-    </form>
-</div>
+{% module FileUpload() %}
 {% end %}
