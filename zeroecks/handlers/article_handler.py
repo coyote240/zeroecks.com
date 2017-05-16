@@ -9,7 +9,7 @@ class ArticleHandler(BaseHandler):
         with self.dbref.cursor() as cursor:
             cursor.execute('''
             SELECT  author, content
-            FROM    articles.articles
+            FROM    site.articles
             WHERE   id = %s
             ''', (id, ))
 
@@ -33,7 +33,7 @@ class NewArticleHandler(BaseHandler):
 
         with self.dbref.cursor() as cursor:
             cursor.execute('''
-            INSERT INTO articles.articles (author, content)
+            INSERT INTO site.articles (author, content)
             values (%s, %s)
             RETURNING id
             ''', (self.current_user, article))

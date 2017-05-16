@@ -65,7 +65,7 @@ class Article {
                 this.xhr.setRequestHeader('X-XSRFToken', xsrf_token);
                 this.xhr.send(event.target.result);
             };
-            this.reader.readAsBinaryString(file);
+            this.reader.readAsText(file);
         });
     }
 

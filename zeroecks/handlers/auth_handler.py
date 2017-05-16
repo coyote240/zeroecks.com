@@ -48,7 +48,7 @@ class AuthHandler(BaseHandler):
         cursor.execute('''
         select  user_name,
                 fingerprint
-        from    users.users
+        from    site.users
         where   user_name = %s
         and     password = %s
         ''', (userid, hashed_password))

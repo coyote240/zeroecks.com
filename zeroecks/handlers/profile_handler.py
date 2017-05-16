@@ -35,7 +35,7 @@ class ProfileHandler(BaseHandler):
                 date_verified,
                 date_created,
                 last_login
-        from users.users
+        from site.users
         where user_name = %s
         ''', (self.current_user,))
 

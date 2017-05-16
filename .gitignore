@@ -90,3 +90,4 @@ ENV/
 
 ssl
 dump.rdb
+flyway.conf
