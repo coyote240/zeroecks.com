@@ -1,5 +1,11 @@
 {% extends 'base.tmpl.html' %}
 
 {% block content %}
-{% module FileUpload() %}
+<section class="new-article">
+    <h1>New Article</h1>
+    {% module FileUpload() %}
+</section>
+<section class="existing-content">
+    <h1>Published Articles</h1>
+</section>
 {% end %}

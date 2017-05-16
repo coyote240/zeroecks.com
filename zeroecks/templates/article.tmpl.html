@@ -1,12 +1,5 @@
-<article>
-    <header>
-        <h1>My bogus article {{ id }}</h1>
-        <time datetime="2017-05-01 12:00">May 1, 12:00pm UTC</time>
-    </header>
-    <section class="content">
-        {{ content }}
-    </section>
-    <footer>
-        <a href="{{ reverse_url('Articles', id ) }}">more...</a>
-    </footer>
-</article>
+{% extends 'base.tmpl.html' %}
+
+{% block content %}
+    {% module Article((id, author, content, date_created)) %}
+{% end %}

@@ -7,8 +7,9 @@ class IndexHandler(BaseHandler):
 
         with self.dbref.cursor() as cursor:
             cursor.execute('''
-            SELECT id, author, content
+            SELECT id, author, content, date_created
             FROM site.articles
+            ORDER BY date_created DESC
             ''')
 
             articles = cursor.fetchall()
