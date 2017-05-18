@@ -5,8 +5,8 @@ from handlers import BaseHandler
 class ProfileHandler(BaseHandler):
 
     @authenticated
-    def get(self):
-        profile = self.get_profile()
+    async def get(self):
+        profile = await self.get_profile()
         if profile is not None:
             (userid, keyid, armored_key, verified, date_verified,
              date_created, last_login) = profile
@@ -25,7 +25,7 @@ class ProfileHandler(BaseHandler):
                         log_message='Profile not found',
                         reason='Profile not found')
 
-    def get_profile(self):
+    async def get_profile(self):
         cursor = self.dbref.cursor()
         cursor.execute('''
         select  user_name,
@@ -43,3 +43,6 @@ class ProfileHandler(BaseHandler):
         cursor.close()
 
         return res
+
+    async def change_password(self, old_pwd, new_pwd):
+        pass

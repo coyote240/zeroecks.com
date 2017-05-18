@@ -5,9 +5,7 @@
             {{ date_created.strftime('%A, %B %d %H:%M') }}
         </time>
     </header>
-    <section class="content">
-        {% raw content %}
-    </section>
+    {% raw content %}
     <footer>
         <a href="{{ reverse_url('Articles', id ) }}">permalink</a>
     </footer>

@@ -1,5 +1,6 @@
 import uuid
 import hashlib
+import binascii
 from tornado.web import HTTPError
 from tornado.options import options
 from handlers import BaseHandler
@@ -40,21 +41,39 @@ class AuthHandler(BaseHandler):
                         log_message='Unauthorized',
                         reason='User name or password are incorrect')
 
+    async def get_user_salt(self, userid):
+        with self.dbref.cursor() as cursor:
+            cursor.execute('''
+            select  salt
+            from    site.users
+            where   user_name = %s
+            ''', (userid,))
+
+            res = cursor.fetchone()
+
+        return res
+
     async def check_creds(self, userid, password):
-        bpasswd = bytes(password, 'utf-8')
-        hashed_password = hashlib.sha256(bpasswd).hexdigest()
+        (salt,) = await self.get_user_salt(userid)
+        if salt is None:
+            return None
 
-        cursor = self.dbref.cursor()
-        cursor.execute('''
-        select  user_name,
-                fingerprint
-        from    site.users
-        where   user_name = %s
-        and     password = %s
-        ''', (userid, hashed_password))
+        dk = hashlib.pbkdf2_hmac('sha512',
+                                 bytes(password, 'utf-8'),
+                                 bytes.fromhex(salt),
+                                 100000)
+        hashed_password = binascii.hexlify(dk).decode()
 
-        res = cursor.fetchone()
-        cursor.close()
+        with self.dbref.cursor() as cursor:
+            cursor.execute('''
+            select  user_name,
+                    fingerprint
+            from    site.users
+            where   user_name = %s
+            and     password = %s
+            ''', (userid, hashed_password))
+
+            res = cursor.fetchone()
 
         return res
 
