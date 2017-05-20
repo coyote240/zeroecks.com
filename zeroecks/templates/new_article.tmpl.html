@@ -6,6 +6,26 @@
     {% module FileUpload() %}
 </section>
 <section class="existing-content">
-    <h1>Published Articles</h1>
+    <h1>Submitted Articles</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Summary</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th>Published</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for article in articles %}
+        <tr class="article-info">
+            <td>{% raw article.content[:50] %}</td>
+            <td>{{ article.date_created.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ article.date_updated.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td><input type="checkbox" value="{{ article.id }}" checked="{{ article.published == True }}"/></td>
+        </tr>
+        {% end %}
+        </tbody>
+    </table>
 </section>
 {% end %}

@@ -1,3 +1,8 @@
+/**************************************************
+ *
+ *  File Dropzone
+ *
+ ***************************************************/
 let dropZone = document.querySelector('.dropzone'),
     xsrf_token = dropZone.getAttribute('token');
 
@@ -41,6 +46,29 @@ dropZone.addEventListener('dragend', (event) => {
     }
 }, false);
 
+/**************************************************
+ *
+ *  Article Item Events
+ *
+ ***************************************************/
+
+let publishers = document.querySelectorAll('tr.article-info input[type="checkbox"]');
+publishers.forEach((publisher) => {
+    'use strict';
+    publisher.addEventListener('change', (event) => {
+        let target = event.target,
+            value = target.value,
+            checked = target.checked;
+
+        console.log(value, checked);
+    });
+});
+
+/**************************************************
+ *
+ *  Article API
+ *
+ ***************************************************/
 class Article {
 
     constructor (path) {
@@ -69,6 +97,10 @@ class Article {
         });
     }
 
-    getArticle () {
+    publishArticle (id, published) {
+
+    }
+
+    deleteArticle (id) {
     }
 }

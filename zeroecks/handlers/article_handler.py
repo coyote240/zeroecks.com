@@ -1,61 +1,58 @@
-import markdown
-import bleach
 from tornado.web import authenticated, HTTPError
 from handlers import BaseHandler
+from models import Article
 
 
 class ArticleHandler(BaseHandler):
 
     async def get(self, id=None):
+        article = await Article(self.dbref).load(id)
 
-        with self.dbref.cursor() as cursor:
-            cursor.execute('''
-            SELECT  author,
-                    content,
-                    date_created
-            FROM    site.articles
-            WHERE   id = %s
-            AND     published = TRUE
-            ''', (id, ))
+        if article is not None:
+            self.render('article.tmpl.html',
+                        article=article)
+            return
 
-            (author, content, date_created) = cursor.fetchone()
+        raise HTTPError(status_code=404,
+                        log_message='Article not found',
+                        reason='The article you seek can not be found.')
 
-        self.render('article.tmpl.html',
-                    id=id,
-                    author=author,
-                    date_created=date_created,
-                    content=content)
+    @authenticated
+    async def delete(self, id=None):
+        if id is not None:
+            article_id = await Article(self.dbref).delete(id)
+            self.write({'id': article_id})
+            return
+
+        raise HTTPError(status_code=404,
+                        log_message='Article not found',
+                        reason='The article you seek can not be found.')
 
 
 class NewArticleHandler(BaseHandler):
 
-    def initialize(self):
-        super().initialize()
-
-        self.allowed_tags = bleach.sanitizer.ALLOWED_TAGS + [
-                u'h1', u'h2', u'p']
-
     @authenticated
-    def get(self, id=None):
-        self.render('new_article.tmpl.html')
+    async def get(self):
+        articles = await Article(self.dbref).by_author(self.current_user)
+
+        if articles is not None:
+            self.render('new_article.tmpl.html',
+                        articles=articles)
+            return
+
+        raise HTTPError(status_code=404,
+                        log_message='Article not found',
+                        reason='The article you seek can not be found.')
 
     @authenticated
     async def post(self):
         '''Create article.
         '''
         article = self.request.body.decode('utf-8')
-        cleansed_article = self.sanitize_article(article)
+        article_id = await Article(self.dbref).create(
+            self.current_user, article, True)
 
-        with self.dbref.cursor() as cursor:
-            cursor.execute('''
-            INSERT INTO site.articles (author, content)
-            values (%s, %s)
-            RETURNING id
-            ''', (self.current_user, cleansed_article))
-
-            next_id = cursor.fetchone()[0]
-
-        self.write({'id': next_id})
+        self.write({'id': article_id})
 
     @authenticated
     async def put(self, id=None):
@@ -63,52 +60,16 @@ class NewArticleHandler(BaseHandler):
         Update stored article with given id, as owned by the currently
         logged in user.
         '''
-        if id is None:
-            raise HTTPError(status_code=404,
-                            log_message='Article not found',
-                            reason='The article you seek can not be found.')
-
         article = self.request.body.decode('utf-8')
         cleansed_article = self.sanitize_article(article)
 
-        with self.dbref.cursor() as cursor:
-            cursor.execute('''
-            UPDATE  site.articles
-            SET     date_modified = now(),
-                    content = %s
-            WHERE   id = %s
-            AND     author = %s
-            ''', (cleansed_article, id, self.current_user))
+        if id is not None:
+            updated_id = await Article(self.dbref).update(
+                    id, cleansed_article, self.current_user)
 
-        self.write({'id': id})
+            self.write({'id': updated_id})
+            return
 
-    @authenticated
-    async def delete(self, id=None):
-        '''Delete article.
-        Delete stored article with given id, as owned by the currently
-        logged in user.
-        '''
-        if id is None:
-            raise HTTPError(status_code=404,
-                            log_message='Article not found',
-                            reason='The article you seek can not be found.')
-
-        with self.dbref.cursor() as cursor:
-            cursor.execute('''
-            DELETE  FROM site.articles
-            WHERE   id = %s
-            AND     author = %s
-            ''', (id, self.current_user))
-
-        self.write({'id': id})
-
-    def sanitize_article(self, article):
-        '''Sanitize user-submitted article.
-        Given a raw markdown string, convert it to HTML and sanitize it.
-        '''
-        formatted_article = markdown.markdown(article)
-        cleansed_article = bleach.clean(formatted_article,
-                                        tags=self.allowed_tags,
-                                        protocols=['http', 'https'],
-                                        strip=True)
-        return bleach.linkify(cleansed_article)
+        raise HTTPError(status_code=404,
+                        log_message='Article not found',
+                        reason='The article you seek can not be found.')

@@ -1,12 +1,12 @@
 <article>
     <header>
-        <h1>My bogus article {{ id }}</h1>
-        <time datetime="{{ date_created }}">
-            {{ date_created.strftime('%A, %B %d %H:%M') }}
+        <h1>My bogus article {{ article.id }}</h1>
+        <time datetime="{{ article.date_created }}">
+            {{ article.date_created.strftime('%A, %B %d %H:%M') }}
         </time>
     </header>
-    {% raw content %}
+    {% raw article.content %}
     <footer>
-        <a href="{{ reverse_url('Articles', id ) }}">permalink</a>
+        <a href="{{ reverse_url('Articles', article.id ) }}">permalink</a>
     </footer>
 </article>
