@@ -18,7 +18,7 @@ class ArticleHandler(BaseHandler):
                         reason='The article you seek can not be found.')
 
     @authenticated
-    async def post(self, _=None):
+    async def post(self):
         '''Create article.
         '''
         article = self.request.body.decode('utf-8')
@@ -28,27 +28,26 @@ class ArticleHandler(BaseHandler):
         self.write({'id': article_id})
 
     @authenticated
-    async def put(self, id=None):
-        '''Update article.
-        Update stored article with given id, as owned by the currently
-        logged in user.
-        '''
-        article = self.request.body.decode('utf-8')
-        cleansed_article = self.sanitize_article(article)
+    async def put(self):
+        id = self.get_body_argument('id')
+        action = self.get_body_argument('action')
 
-        if id is not None:
-            updated_id = await Article(self.dbref).update(
-                    id, cleansed_article, self.current_user)
-
-            self.write({'id': updated_id})
+        if id is None:
+            raise HTTPError(status_code=404,
+                            log_message='Article not found',
+                            reason='The article you seek can not be found.')
             return
 
-        raise HTTPError(status_code=404,
-                        log_message='Article not found',
-                        reason='The article you seek can not be found.')
+        if action == 'publish':
+            published = self.get_body_argument('published')
+            status = published == 'true'
+            rowcount = await Article(self.dbref).publish(
+                id, status, self.current_user)
+
+        self.write({'rowcount': rowcount})
 
     @authenticated
-    async def delete(self, _=None):
+    async def delete(self):
         id = self.get_body_argument('id')
         rowcount = await Article(self.dbref).delete(id, self.current_user)
 
@@ -56,6 +55,7 @@ class ArticleHandler(BaseHandler):
             raise HTTPError(status_code=404,
                             log_message='Article not found',
                             reason='The article you seek can not be found.')
+            return
 
         self.write({'rowcount': rowcount})
 

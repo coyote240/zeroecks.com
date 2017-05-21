@@ -18,8 +18,8 @@ dropZone.addEventListener('drop', (event) => {
 
             if (item.kind === 'file') {
                 let f = item.getAsFile();
-                let article = new Article('/articles/');
-                article.uploadArticle(f).then((res) => {
+                let article = new Article();
+                article.upload(f).then((res) => {
                     window.location = `/articles/${res.id}`;
                 });
             }
@@ -57,10 +57,13 @@ publishers.forEach((publisher) => {
     'use strict';
     publisher.addEventListener('change', (event) => {
         let target = event.target,
-            value = target.value,
+            id = target.value,
             checked = target.checked;
 
-        console.log(value, checked);
+        let article = new Article();
+        article.publish(id, checked).then((res) => {
+            console.log(res);
+        });
     });
 });
 
@@ -71,8 +74,8 @@ deleters.forEach((deleter) => {
         let target = event.target,
             value = target.getAttribute('article-id');
 
-        let article = new Article('/articles/');
-        article.deleteArticle(value).then((res) => {
+        let article = new Article();
+        article.delete(value).then((res) => {
             let article_info = JSON.parse(res),
                 row = document.querySelector(`tr[article-id="${value}"]`);
             if (article_info.rowcount > 0) {
@@ -91,13 +94,13 @@ deleters.forEach((deleter) => {
  ***************************************************/
 class Article {
 
-    constructor (path) {
+    constructor () {
         this.reader = new FileReader();
         this.xhr = new XMLHttpRequest();
-        this.path = path;
+        this.path = '/articles';
     }
 
-    uploadArticle (file) {
+    upload (file) {
         return new Promise((resolve, reject) => {
             this.xhr.addEventListener('load', (event) => {
                 let res = JSON.parse(this.xhr.responseText);
@@ -117,11 +120,25 @@ class Article {
         });
     }
 
-    publishArticle (id, published) {
+    publish (id, published) {
+        return new Promise((resolve, reject) => {
+            this.xhr.addEventListener('load', (event) => {
+                let res = JSON.parse(this.xhr.responseText);
+                resolve(res);
+            }, false);
 
+            this.xhr.addEventListener('error', (event) => {
+                reject(event);
+            }, false);
+
+            this.xhr.open('PUT', this.path);
+            this.xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            this.xhr.setRequestHeader('X-XSRFToken', xsrf_token);
+            this.xhr.send(`id=${id}&action=publish&published=${published}`);
+        });
     }
 
-    deleteArticle (id) {
+    delete (id) {
         return new Promise((resolve, reject) => {
             this.xhr.addEventListener('load', (event) => {
                 let res = this.xhr.responseText;

@@ -41,7 +41,7 @@ class Article(object):
             return None
         return Record._make(res)
 
-    async def by_author(self, author, published=True):
+    async def by_author(self, author):
         Record = namedtuple(
             'Record',
             'id, content, date_created, date_updated, published')
@@ -55,9 +55,8 @@ class Article(object):
                     published
             FROM    site.articles
             WHERE   author = %s
-            AND     published = %s
             ORDER BY date_updated DESC
-            ''', (author, published))
+            ''', (author, ))
 
             articles = map(Record._make, cursor.fetchall())
 
@@ -76,7 +75,7 @@ class Article(object):
 
         return article_id
 
-    def update(self, id, article, author):
+    async def update(self, id, article, author):
         with self.connection.cursor() as cursor:
             cursor.execute('''
             UPDATE  site.articles
@@ -99,8 +98,18 @@ class Article(object):
 
         return rowcount
 
-    def publish(self):
-        pass
+    async def publish(self, id, published, author):
+        with self.connection.cursor() as cursor:
+            cursor.execute('''
+            UPDATE  site.articles
+            SET     date_updated = now(),
+                    published = %s
+            WHERE   id = %s
+            AND     author = %s
+            ''', (published, id, author))
+            rowcount = cursor.rowcount
+
+        return rowcount
 
     def sanitize(self, article):
         '''Sanitize user-submitted article.

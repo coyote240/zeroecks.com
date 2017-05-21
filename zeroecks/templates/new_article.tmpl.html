@@ -23,9 +23,15 @@
             <td>{% raw article.content[:50] %}</td>
             <td>{{ article.date_created.strftime('%Y-%m-%d %H:%M') }}</td>
             <td>{{ article.date_updated.strftime('%Y-%m-%d %H:%M') }}</td>
-            <td><input type="checkbox" 
+            <td>
+                {% if article.published == True %}
+                <input type="checkbox" 
                        value="{{ article.id }}"
-                       checked="{{ article.published == True }}"/>
+                       checked="checked"/>
+                {% else %}
+                <input type="checkbox" 
+                       value="{{ article.id }}"/>
+                {% end %}
             </td>
             <td><a href="javascript:void(0);"
                    class="delete-article"
