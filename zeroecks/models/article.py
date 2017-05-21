@@ -95,8 +95,9 @@ class Article(object):
             WHERE   id = %s
             AND     author = %s
             ''', (id, author))
+            rowcount = cursor.rowcount
 
-        return id
+        return rowcount
 
     def publish(self):
         pass

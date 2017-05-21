@@ -14,15 +14,23 @@
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Published</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         {% for article in articles %}
-        <tr class="article-info">
+        <tr class="article-info" article-id="{{ article.id }}">
             <td>{% raw article.content[:50] %}</td>
             <td>{{ article.date_created.strftime('%Y-%m-%d %H:%M') }}</td>
             <td>{{ article.date_updated.strftime('%Y-%m-%d %H:%M') }}</td>
-            <td><input type="checkbox" value="{{ article.id }}" checked="{{ article.published == True }}"/></td>
+            <td><input type="checkbox" 
+                       value="{{ article.id }}"
+                       checked="{{ article.published == True }}"/>
+            </td>
+            <td><a href="javascript:void(0);"
+                   class="delete-article"
+                   article-id="{{ article.id }}">delete</a>
+            </td>
         </tr>
         {% end %}
         </tbody>

@@ -18,34 +18,7 @@ class ArticleHandler(BaseHandler):
                         reason='The article you seek can not be found.')
 
     @authenticated
-    async def delete(self, id=None):
-        if id is not None:
-            article_id = await Article(self.dbref).delete(id)
-            self.write({'id': article_id})
-            return
-
-        raise HTTPError(status_code=404,
-                        log_message='Article not found',
-                        reason='The article you seek can not be found.')
-
-
-class NewArticleHandler(BaseHandler):
-
-    @authenticated
-    async def get(self):
-        articles = await Article(self.dbref).by_author(self.current_user)
-
-        if articles is not None:
-            self.render('new_article.tmpl.html',
-                        articles=articles)
-            return
-
-        raise HTTPError(status_code=404,
-                        log_message='Article not found',
-                        reason='The article you seek can not be found.')
-
-    @authenticated
-    async def post(self):
+    async def post(self, _=None):
         '''Create article.
         '''
         article = self.request.body.decode('utf-8')
@@ -68,6 +41,34 @@ class NewArticleHandler(BaseHandler):
                     id, cleansed_article, self.current_user)
 
             self.write({'id': updated_id})
+            return
+
+        raise HTTPError(status_code=404,
+                        log_message='Article not found',
+                        reason='The article you seek can not be found.')
+
+    @authenticated
+    async def delete(self, _=None):
+        id = self.get_body_argument('id')
+        rowcount = await Article(self.dbref).delete(id, self.current_user)
+
+        if rowcount is 0:
+            raise HTTPError(status_code=404,
+                            log_message='Article not found',
+                            reason='The article you seek can not be found.')
+
+        self.write({'rowcount': rowcount})
+
+
+class NewArticleHandler(BaseHandler):
+
+    @authenticated
+    async def get(self):
+        articles = await Article(self.dbref).by_author(self.current_user)
+
+        if articles is not None:
+            self.render('new_article.tmpl.html',
+                        articles=articles)
             return
 
         raise HTTPError(status_code=404,

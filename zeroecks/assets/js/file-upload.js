@@ -18,7 +18,7 @@ dropZone.addEventListener('drop', (event) => {
 
             if (item.kind === 'file') {
                 let f = item.getAsFile();
-                let article = new Article('/articles/new');
+                let article = new Article('/articles/');
                 article.uploadArticle(f).then((res) => {
                     window.location = `/articles/${res.id}`;
                 });
@@ -64,6 +64,26 @@ publishers.forEach((publisher) => {
     });
 });
 
+let deleters = document.querySelectorAll('tr.article-info a.delete-article');
+deleters.forEach((deleter) => {
+    'use strict';
+    deleter.addEventListener('click', (event) => {
+        let target = event.target,
+            value = target.getAttribute('article-id');
+
+        let article = new Article('/articles/');
+        article.deleteArticle(value).then((res) => {
+            let article_info = JSON.parse(res),
+                row = document.querySelector(`tr[article-id="${value}"]`);
+            if (article_info.rowcount > 0) {
+                row.parentElement.removeChild(row);
+            }
+        }, (error) => {
+            console.log(error);
+        });
+    });
+});
+
 /**************************************************
  *
  *  Article API
@@ -102,5 +122,20 @@ class Article {
     }
 
     deleteArticle (id) {
+        return new Promise((resolve, reject) => {
+            this.xhr.addEventListener('load', (event) => {
+                let res = this.xhr.responseText;
+                resolve(res);
+            }, false);
+
+            this.xhr.addEventListener('error', (event) => {
+                reject(event);
+            }, false);
+
+            this.xhr.open('DELETE', this.path);
+            this.xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            this.xhr.setRequestHeader('X-XSRFToken', xsrf_token);
+            this.xhr.send(`id=${id}`);
+        });
     }
 }
