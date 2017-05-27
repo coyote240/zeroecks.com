@@ -26,15 +26,20 @@ class Article(object):
         return articles
 
     async def load(self, id):
-        Record = namedtuple('Record', 'id, author, content, date_created')
+        Record = namedtuple('Record', '''
+            id, author, content, raw_input, date_created
+        ''')
 
         with self.connection.cursor() as cursor:
             cursor.execute('''
-            SELECT  id, author, content, date_created
+            SELECT  id,
+                    author,
+                    content,
+                    raw_input,
+                    date_created
             FROM    site.articles
             WHERE   id = %s
-            AND     published = TRUE
-            ''', (id, ))
+            ''', (id,))
             res = cursor.fetchone()
 
         if res is None:
@@ -67,25 +72,31 @@ class Article(object):
 
         with self.connection.cursor() as cursor:
             cursor.execute('''
-            INSERT INTO site.articles (author, content, published)
-            values (%s, %s, %s)
+            INSERT INTO site.articles (author, content, raw_input, published)
+            values (%s, %s, %s, %s)
             RETURNING id
-            ''', (author, cleansed_article, published))
+            ''', (author, cleansed_article, article, published))
             (article_id,) = cursor.fetchone()
 
         return article_id
 
-    async def update(self, id, article, author):
+    async def update(self, id, article, author, published=False):
+        cleansed_article = self.sanitize(article)
+
         with self.connection.cursor() as cursor:
             cursor.execute('''
             UPDATE  site.articles
-            SET     date_modified = now(),
-                    content = %s
+            SET     date_updated = now(),
+                    content = %s,
+                    raw_input = %s,
+                    published = %s
             WHERE   id = %s
             AND     author = %s
-            ''', (article, id, author))
+            RETURNING id
+            ''', (cleansed_article, article, published, id, author))
+            (article_id,) = cursor.fetchone()
 
-        return id
+        return article_id
 
     async def delete(self, id, author):
         with self.connection.cursor() as cursor:

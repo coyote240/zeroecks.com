@@ -15,6 +15,7 @@
                 <th>Updated</th>
                 <th>Published</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,9 @@
             <td><a href="javascript:void(0);"
                    class="delete-article"
                    article-id="{{ article.id }}">delete</a>
+            </td>
+            <td>
+                <a href="{{ reverse_url('EditArticle', article.id) }}">edit</a>
             </td>
         </tr>
         {% end %}

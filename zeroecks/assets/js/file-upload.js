@@ -20,7 +20,7 @@ dropZone.addEventListener('drop', (event) => {
                 let f = item.getAsFile();
                 let article = new Article();
                 article.upload(f).then((res) => {
-                    window.location = `/articles/${res.id}`;
+                    window.location = `/articles/edit/${res.id}`;
                 });
             }
         }

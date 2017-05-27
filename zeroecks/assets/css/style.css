@@ -66,3 +66,7 @@ label {
 .password-form input[type="submit"] {
     grid-column: 2 / 2;
 }
+
+.edit-form textarea {
+    width: 100%
+}

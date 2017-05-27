@@ -26,7 +26,7 @@ class ArticleHandler(BaseHandler):
         '''
         article = self.request.body.decode('utf-8')
         article_id = await self.article.create(
-            self.current_user, article, True)
+            self.current_user, article)
 
         self.write({'id': article_id})
 
@@ -80,3 +80,47 @@ class NewArticleHandler(BaseHandler):
         raise HTTPError(status_code=404,
                         log_message='Article not found',
                         reason='The article you seek can not be found.')
+
+
+class EditArticleHandler(BaseHandler):
+
+    def prepare(self):
+        self.article = Article(self.dbref)
+
+    @authenticated
+    async def get(self, id=None):
+
+        if id is None:
+            raise HTTPError(status_code=400,
+                            log_message='Bad Request',
+                            reason='Article ID required')
+
+        article = await self.article.load(id)
+        if article is not None:
+            self.render('edit_article.tmpl.html',
+                        article=article)
+            return
+
+        raise HTTPError(status_code=404,
+                        log_message='Article not found',
+                        reason='The article you seek can not be found.')
+
+    @authenticated
+    async def post(self, id):
+        article = self.get_body_argument('article')
+
+        if id is None:
+            raise HTTPError(status_code=400,
+                            log_message='Bad Request',
+                            reason='Article ID Required')
+            return
+
+        rowcount = await self.article.update(id, article, self.current_user)
+
+        if rowcount is 0:
+            raise HTTPError(status_code=404,
+                            log_message='Article not found',
+                            reason='The article you seek can not be found.')
+            return
+
+        self.redirect(self.reverse_url('Article', id))

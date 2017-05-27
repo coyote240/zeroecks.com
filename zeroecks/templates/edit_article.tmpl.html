@@ -1,0 +1,9 @@
+{% extends 'base.tmpl.html' %}
+
+{% block content %}
+<form class="edit-form" method="post" action="{{ reverse_url('EditArticle', article.id) }}">
+    {% module xsrf_form_html() %}
+    <textarea id="article" name="article" rows="25">{{ article.raw_input }}</textarea>
+    <input type="submit" value="Publish"/>
+</form>
+{% end %}
