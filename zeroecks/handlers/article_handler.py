@@ -5,8 +5,11 @@ from models import Article
 
 class ArticleHandler(BaseHandler):
 
+    def prepare(self):
+        self.article = Article(self.dbref)
+
     async def get(self, id=None):
-        article = await Article(self.dbref).load(id)
+        article = await self.article.load(id)
 
         if article is not None:
             self.render('article.tmpl.html',
@@ -22,7 +25,7 @@ class ArticleHandler(BaseHandler):
         '''Create article.
         '''
         article = self.request.body.decode('utf-8')
-        article_id = await Article(self.dbref).create(
+        article_id = await self.article.create(
             self.current_user, article, True)
 
         self.write({'id': article_id})
@@ -41,7 +44,7 @@ class ArticleHandler(BaseHandler):
         if action == 'publish':
             published = self.get_body_argument('published')
             status = published == 'true'
-            rowcount = await Article(self.dbref).publish(
+            rowcount = await self.article.publish(
                 id, status, self.current_user)
 
         self.write({'rowcount': rowcount})
@@ -49,7 +52,7 @@ class ArticleHandler(BaseHandler):
     @authenticated
     async def delete(self):
         id = self.get_body_argument('id')
-        rowcount = await Article(self.dbref).delete(id, self.current_user)
+        rowcount = await self.article.delete(id, self.current_user)
 
         if rowcount is 0:
             raise HTTPError(status_code=404,
@@ -62,9 +65,12 @@ class ArticleHandler(BaseHandler):
 
 class NewArticleHandler(BaseHandler):
 
+    def prepare(self):
+        self.article = Article(self.dbref)
+
     @authenticated
     async def get(self):
-        articles = await Article(self.dbref).by_author(self.current_user)
+        articles = await self.article.by_author(self.current_user)
 
         if articles is not None:
             self.render('new_article.tmpl.html',

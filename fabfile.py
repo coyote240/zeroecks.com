@@ -13,6 +13,9 @@ activate virtual environment
 pull code
 install dependencies
 restart services
+install certbot
+register cert
+install cert
 '''
 
 
@@ -21,6 +24,8 @@ def setup():
     """
     Setup python environment
     """
+    sudo('apt-get update')
+    sudo('apt-get upgrade -y')
     sudo('apt-get install -y python3-setuptools')
     sudo('easy_install pip')
     sudo('pip install virtualenv')

@@ -27,4 +27,4 @@ six==1.10.0
 tornado==4.4.3
 tornadobase==0.1.2
 webencodings==0.5.1
--e git+git@github.com:coyote240/zeroecks.com.git@99d8a395ee091a470512bb4f117d150accef8338#egg=zeroecks.com
+-e git+git@github.com:coyote240/zeroecks.com.git@0bec3ce969fad4db74ecddfa10e5300e82aa9e09#egg=zeroecks.com
