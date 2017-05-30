@@ -6,9 +6,16 @@ body {
 header.site-main {
     position: fixed;
     top: 0; right: 0;
-    /*border: 1px dotted #708090;*/
-    border-width: 0 0 1px 1px;
     text-align: right;
+}
+
+nav.site-main {
+    text-align: left;
+    margin: 1rem 0;
+}
+
+nav.site-main ul li {
+    margin: .5rem 0;
 }
 
 footer.site-main {

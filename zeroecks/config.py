@@ -5,3 +5,4 @@ dbuser = 'postgres'
 dbpass = 'postgres'
 cookie_secret = 'placeholder_cookie_secret'
 session_timeout = 86400
+debug = True

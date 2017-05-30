@@ -8,6 +8,14 @@ a {
     color: #708090;
 }
 
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 18px;
+}
+
 header.site-main {
     padding: 1rem;
     text-align: left;
