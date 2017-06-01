@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='zeroecks.com',
-    version='0.1',
+    version='0.1.2',
     description='zeroecks.com',
     long_description=long_description,
     author='Adam A.G. Shamblin',
@@ -27,6 +27,7 @@ setup(
         ]
     },
     install_requires=[
+        'six==1.10.0',
         'tornado>=4',
         'tornadobase==0.1.2',
         'psycopg2==2.7.1',
