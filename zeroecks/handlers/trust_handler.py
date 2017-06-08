@@ -2,7 +2,7 @@ import datetime
 import logging
 from tornado.web import authenticated
 from tornado.util import ObjectDict
-from handlers import BaseHandler
+from . import BaseHandler
 
 
 class TrustHandler(BaseHandler):

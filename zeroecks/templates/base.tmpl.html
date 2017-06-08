@@ -19,7 +19,7 @@
                 <li><a href="https://github.com/coyote240">coyote240 @ GitHub</a></li>
             </ul>
 
-            {% from modules.navigation_module import LOGGED_IN, LOGGED_OUT %}
+            {% from zeroecks.modules.navigation_module import LOGGED_IN, LOGGED_OUT %}
             {% module Navigation(
                     current_user,
                     ('Home', 'home', LOGGED_IN | LOGGED_OUT),

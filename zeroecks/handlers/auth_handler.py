@@ -4,7 +4,7 @@ import binascii
 from tornado import gen
 from tornado.web import HTTPError
 from tornado.options import options
-from handlers import BaseHandler
+from . import BaseHandler
 
 
 class AuthHandler(BaseHandler):

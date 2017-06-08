@@ -1,5 +1,5 @@
 import http.client
-from handlers import BaseHandler
+from . import BaseHandler
 
 
 class NotFoundHandler(BaseHandler):

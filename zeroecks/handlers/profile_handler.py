@@ -1,6 +1,6 @@
 from tornado import gen
 from tornado.web import HTTPError, authenticated
-from handlers import BaseHandler
+from . import BaseHandler
 
 
 class ProfileHandler(BaseHandler):

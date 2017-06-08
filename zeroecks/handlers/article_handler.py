@@ -1,7 +1,7 @@
 from tornado.web import authenticated, HTTPError
 from tornado import gen
-from handlers import BaseHandler
-from models import Article
+from . import BaseHandler
+from ..models import Article
 
 
 class ArticleHandler(BaseHandler):

@@ -1,6 +1,7 @@
 import bleach
 import markdown
 from collections import namedtuple
+from tornado import gen
 
 
 class Article(object):
@@ -10,7 +11,8 @@ class Article(object):
         self.allowed_tags = bleach.sanitizer.ALLOWED_TAGS + [
                 u'h1', u'h2', u'p']
 
-    async def all(self):
+    @gen.coroutine
+    def all(self):
         Record = namedtuple('Record', 'id, author, content, date_created')
 
         with self.connection.cursor() as cursor:
@@ -25,7 +27,8 @@ class Article(object):
 
         return articles
 
-    async def load(self, id):
+    @gen.coroutine
+    def load(self, id):
         Record = namedtuple('Record', '''
             id, author, content, raw_input, date_created
         ''')
@@ -46,7 +49,8 @@ class Article(object):
             return None
         return Record._make(res)
 
-    async def by_author(self, author):
+    @gen.coroutine
+    def by_author(self, author):
         Record = namedtuple(
             'Record',
             'id, content, date_created, date_updated, published')
@@ -67,7 +71,8 @@ class Article(object):
 
         return articles
 
-    async def create(self, author, article, published=False):
+    @gen.coroutine
+    def create(self, author, article, published=False):
         cleansed_article = self.sanitize(article)
 
         with self.connection.cursor() as cursor:
@@ -80,7 +85,8 @@ class Article(object):
 
         return article_id
 
-    async def update(self, id, article, author, published=False):
+    @gen.coroutine
+    def update(self, id, article, author, published=False):
         cleansed_article = self.sanitize(article)
 
         with self.connection.cursor() as cursor:
@@ -98,7 +104,8 @@ class Article(object):
 
         return article_id
 
-    async def delete(self, id, author):
+    @gen.coroutine
+    def delete(self, id, author):
         with self.connection.cursor() as cursor:
             cursor.execute('''
             DELETE FROM site.articles
@@ -109,7 +116,8 @@ class Article(object):
 
         return rowcount
 
-    async def publish(self, id, published, author):
+    @gen.coroutine
+    def publish(self, id, published, author):
         with self.connection.cursor() as cursor:
             cursor.execute('''
             UPDATE  site.articles

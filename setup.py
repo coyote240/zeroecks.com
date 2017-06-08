@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='zeroecks.com',
-    version='0.1.3',
+    version='0.1.5',
     description='zeroecks.com',
     long_description=long_description,
     author='Adam A.G. Shamblin',
@@ -23,7 +23,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'startserver = zeroecks.application:main'
+            'zeroecks = zeroecks.application:main'
         ]
     },
     install_requires=[

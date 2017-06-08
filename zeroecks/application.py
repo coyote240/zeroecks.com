@@ -1,10 +1,8 @@
-#!/usr/bin/env python
-
 import tempfile
 import gnupg
 import tornadobase.application
-import handlers
-import modules
+from . import handlers
+from . import modules
 
 from tornado.web import URLSpec
 from tornado.options import define
@@ -74,7 +72,3 @@ class Application(tornadobase.application.Application):
 def main():
     app = Application()
     app.start()
-
-
-if __name__ == '__main__':
-    main()
