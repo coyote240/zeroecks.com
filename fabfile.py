@@ -1,4 +1,4 @@
-from fabric.api import env, task, sudo, cd, local, put
+from fabric.api import env, task, run, sudo, cd, local, put
 import pkg_resources
 
 
@@ -8,6 +8,7 @@ env.path = '/var/www/{project_name}'.format(**env)
 env.virtualenv_path = '/var/env/{project_name}'.format(**env)
 env.distribution_path = '/var/dist/{project_name}'.format(**env)
 env.package_version = pkg_resources.get_distribution(env.project_name).version
+env.flyway_download = 'https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.2.0/flyway-commandline-4.2.0-linux-x64.tar.gz' # noqa
 
 '''
 install supervisord
@@ -52,6 +53,12 @@ def install_dependencies():
 def install_servers():
     sudo('apt-get install -y -t jessie-backports '
          'nginx postgresql redis-server')
+
+
+@task
+def install_flyway():
+    run('wget {flyway_download}'.format(**env))
+    run('tar xzf flyway-commandline-4.2.0-linux-x64.tar.gz')
 
 
 @task

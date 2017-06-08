@@ -1,3 +1,6 @@
 include LICENSE.txt
 recursive-include conf *
 recursive-include init *
+recursive-include zeroecks/templates *
+recursive-include zeroecks/assets *
+recursive-include sql *.sql

@@ -34,6 +34,7 @@ setup(
         'redis==2.10.5',
         'hiredis==0.2.0',
         'Markdown==2.6.8',
-        'bleach==2.0.0'
+        'bleach==2.0.0',
+        'gnupg==2.2.0'
     ],
     tests_require=['nose'])
