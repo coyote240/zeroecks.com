@@ -91,3 +91,4 @@ ENV/
 ssl
 dump.rdb
 flyway.conf
+config.py

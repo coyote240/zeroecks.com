@@ -76,6 +76,8 @@ def install_site():
     sudo('{virtualenv_path}/bin/pip install '
          '{distribution_path}/{project_name}-{package_version}.tar.gz'.format(**env)) # noqa
 
+    ''' install configs '''
+
     with cd('/etc/nginx/'):
         sudo('rm sites-enabled/default')
         sudo('ln -s sites-available/{project_name} '
