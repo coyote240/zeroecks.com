@@ -1,6 +1,7 @@
 import uuid
 import hashlib
 import binascii
+from tornado import gen
 from tornado.web import HTTPError
 from tornado.options import options
 from handlers import BaseHandler
@@ -24,12 +25,13 @@ class AuthHandler(BaseHandler):
 
         self.render('login.tmpl.html')
 
-    async def post(self):
+    @gen.coroutine
+    def post(self):
         userid = self.get_argument('userid')
         password = self.get_argument('password')
         dest = self.get_argument('next', default='/')
 
-        res = await self.check_creds(userid, password)
+        res = yield self.check_creds(userid, password)
 
         if res is not None:
             (userid, fingerprint) = res
@@ -41,7 +43,8 @@ class AuthHandler(BaseHandler):
                         log_message='Unauthorized',
                         reason='User name or password are incorrect')
 
-    async def get_user_salt(self, userid):
+    @gen.coroutine
+    def get_user_salt(self, userid):
         with self.dbref.cursor() as cursor:
             cursor.execute('''
             select  salt
@@ -53,8 +56,9 @@ class AuthHandler(BaseHandler):
 
         return res
 
-    async def check_creds(self, userid, password):
-        (salt,) = await self.get_user_salt(userid)
+    @gen.coroutine
+    def check_creds(self, userid, password):
+        (salt,) = yield self.get_user_salt(userid)
         if salt is None:
             return None
 
