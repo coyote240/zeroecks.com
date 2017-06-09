@@ -1,25 +1,21 @@
 import tornado
-import unittest.mock
-from tornado.testing import AsyncHTTPTestCase
+from tornado.testing import AsyncHTTPTestCase, gen_test
 from tornado.options import options
-from application import Application
+from .. import application
 
 
 class TestApplication(AsyncHTTPTestCase):
 
     def get_app(self):
-
-        class TestApp(Application):
-
-            def init_options(self):
-                super().init_options()
-                unittest.mock.patch.object(options.mockable(), 'config', 'config.py')
-
-        return TestApp()
+        app = application.Application()
+        app.settings['template_path'] = 'foo'
+        print(app.settings)
+        return app
 
     def test_config(self):
         self.assertEqual(options.template_path, 'zeroecks/templates')
 
+    @gen_test
     def test_index(self):
         response = self.fetch('/')
         server = response.headers.get('Server')

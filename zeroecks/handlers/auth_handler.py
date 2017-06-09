@@ -1,10 +1,9 @@
 import uuid
-import hashlib
-import binascii
 from tornado import gen
 from tornado.web import HTTPError
 from tornado.options import options
 from . import BaseHandler
+from ..models import User
 
 
 class AuthHandler(BaseHandler):
@@ -12,6 +11,9 @@ class AuthHandler(BaseHandler):
     def initialize(self, action=None):
         self.action = action
         super().initialize()
+
+    def prepare(self):
+        self.user = User(self.dbref)
 
     def get(self):
         if self.action is 'logout':
@@ -31,7 +33,7 @@ class AuthHandler(BaseHandler):
         password = self.get_argument('password')
         dest = self.get_argument('next', default='/')
 
-        res = yield self.check_creds(userid, password)
+        res = yield self.user.authorize(userid, password)
 
         if res is not None:
             (userid, fingerprint) = res
@@ -42,44 +44,6 @@ class AuthHandler(BaseHandler):
         raise HTTPError(status_code=401,
                         log_message='Unauthorized',
                         reason='User name or password are incorrect')
-
-    @gen.coroutine
-    def get_user_salt(self, userid):
-        with self.dbref.cursor() as cursor:
-            cursor.execute('''
-            select  salt
-            from    site.users
-            where   user_name = %s
-            ''', (userid,))
-
-            res = cursor.fetchone()
-
-        return res
-
-    @gen.coroutine
-    def check_creds(self, userid, password):
-        (salt,) = yield self.get_user_salt(userid)
-        if salt is None:
-            return None
-
-        dk = hashlib.pbkdf2_hmac('sha512',
-                                 bytes(password, 'utf-8'),
-                                 bytes.fromhex(salt),
-                                 100000)
-        hashed_password = binascii.hexlify(dk).decode()
-
-        with self.dbref.cursor() as cursor:
-            cursor.execute('''
-            select  user_name,
-                    fingerprint
-            from    site.users
-            where   user_name = %s
-            and     password = %s
-            ''', (userid, hashed_password))
-
-            res = cursor.fetchone()
-
-        return res
 
     def set_session(self, userid, fingerprint):
         session_id = str(uuid.uuid4())

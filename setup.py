@@ -16,11 +16,7 @@ setup(
     license='MIT',
     url='https://zeroecks.com',
     packages=find_packages(exclude=['tests']),
-    data_files=[
-        ('/etc/nginx', ['conf/nginx.conf']),
-        ('/etc/nginx/sites-available', ['conf/nginx.site.conf']),
-        ('/etc/redis', ['conf/redis.conf'])
-    ],
+    include_package_data=True,
     entry_points={
         'console_scripts': [
             'zeroecks = zeroecks.application:main'

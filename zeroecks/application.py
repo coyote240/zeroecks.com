@@ -1,5 +1,3 @@
-import tempfile
-import gnupg
 import tornadobase.application
 from . import handlers
 from . import modules
@@ -9,12 +7,6 @@ from tornado.options import define
 
 
 class Application(tornadobase.application.Application):
-
-    def __init__(self):
-        self.homedir = tempfile.TemporaryDirectory()
-        self.gpg = gnupg.GPG(homedir=self.homedir.name)
-
-        super().__init__()
 
     def init_options(self):
 
@@ -38,10 +30,6 @@ class Application(tornadobase.application.Application):
             URLSpec(r'/',
                     handlers.IndexHandler,
                     name='Home'),
-            URLSpec(r'/trust',
-                    handlers.TrustHandler,
-                    {'gpg': self.gpg},
-                    name='Trust'),
             URLSpec(r'/articles',
                     handlers.ArticleHandler,
                     name='Articles'),
