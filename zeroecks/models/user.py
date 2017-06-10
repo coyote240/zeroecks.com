@@ -1,6 +1,7 @@
 import uuid
 import hashlib
 import binascii
+from collections import namedtuple
 from tornado import gen
 
 
@@ -57,6 +58,31 @@ class User(object):
             res = cursor.fetchone()
 
         return res
+
+    @gen.coroutine
+    def get_profile(self, userid):
+        Record = namedtuple('Record', '''
+            userid, keyid, armored_key, verified,
+            date_verified, date_created, last_login''')
+
+        cursor = self.connection.cursor()
+        cursor.execute('''
+        select  user_name,
+                key_id,
+                armored_key,
+                verified,
+                date_verified,
+                date_created,
+                last_login
+        from site.users
+        where user_name = %s
+        ''', (userid,))
+
+        res = cursor.fetchone()
+
+        if res is None:
+            return None
+        return Record._make(res)
 
     def hash_password(self, password, salt=None):
         if salt is None:

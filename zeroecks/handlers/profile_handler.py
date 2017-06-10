@@ -1,14 +1,18 @@
 from tornado import gen
 from tornado.web import HTTPError, authenticated
 from . import BaseHandler
+from ..models import User
 
 
 class ProfileHandler(BaseHandler):
 
+    def prepare(self):
+        self.user = User(self.dbref)
+
     @authenticated
     @gen.coroutine
     def get(self):
-        profile = yield self.get_profile()
+        profile = yield self.user.get_profile(self.current_user)
         if profile is not None:
             (userid, keyid, armored_key, verified, date_verified,
              date_created, last_login) = profile
@@ -26,26 +30,6 @@ class ProfileHandler(BaseHandler):
         raise HTTPError(status_code=404,
                         log_message='Profile not found',
                         reason='Profile not found')
-
-    @gen.coroutine
-    def get_profile(self):
-        cursor = self.dbref.cursor()
-        cursor.execute('''
-        select  user_name,
-                key_id,
-                armored_key,
-                verified,
-                date_verified,
-                date_created,
-                last_login
-        from site.users
-        where user_name = %s
-        ''', (self.current_user,))
-
-        res = cursor.fetchone()
-        cursor.close()
-
-        return res
 
     @gen.coroutine
     def change_password(self, old_pwd, new_pwd):
