@@ -2,20 +2,18 @@ import tornadobase.application
 from . import handlers
 from . import modules
 
+import tornado
 from tornado.web import URLSpec
-from tornado.options import define
+from tornado.options import define, options
+
+
+define('dbname', type=str)
+define('dbuser', type=str)
+define('dbpass', type=str)
+define('session_timeout', type=int, default=86400)
 
 
 class Application(tornadobase.application.Application):
-
-    def init_options(self):
-
-        define('dbname', type=str)
-        define('dbuser', type=str)
-        define('dbpass', type=str)
-        define('session_timeout', type=int, default=86400)
-
-        super().init_options()
 
     def init_settings(self):
         settings = super().init_settings()
@@ -56,7 +54,11 @@ class Application(tornadobase.application.Application):
                     handlers.ProfileHandler,
                     name='Profile')]
 
+    def stop(self):
+        tornado.ioloop.IOLoop.current().stop()
+
 
 def main():
+    options.parse_command_line()
     app = Application()
     app.start()

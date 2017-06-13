@@ -25,7 +25,7 @@ setup(
     install_requires=[
         'six==1.10.0',
         'tornado>=4',
-        'tornadobase==0.1.2',
+        'tornadobase==0.1.6',
         'psycopg2==2.7.1',
         'redis==2.10.5',
         'hiredis==0.2.0',
