@@ -1,4 +1,5 @@
 from fabric.api import env, task, run, sudo, cd, local, put
+from fabric.colors import blue, green
 import pkg_resources
 
 
@@ -11,8 +12,6 @@ env.package_version = pkg_resources.get_distribution(env.project_name).version
 env.flyway_download = 'https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.2.0/flyway-commandline-4.2.0-linux-x64.tar.gz' # noqa
 
 '''
-install supervisord
-restart services
 install certbot
 register cert
 install cert
@@ -31,6 +30,8 @@ def setup():
     Update and upgrade Debian packages.
     Create necessary directories.
     '''
+    print(green('Preparing host for deployment'))
+
     sudo('''echo '\ndeb http://ftp.debian.org/debian jessie-backports main' \
             >> /etc/apt/sources.list''')
 
@@ -42,6 +43,8 @@ def setup():
 
 @task
 def install_dependencies():
+    print(green('Installing python dependencies'))
+
     sudo('apt-get install -y python3-pip')
     sudo('pip3 install virtualenv')
 
@@ -52,7 +55,7 @@ def install_dependencies():
 @task
 def install_servers():
     sudo('apt-get install -y -t jessie-backports '
-         'nginx postgresql redis-server')
+         'nginx postgresql redis-server supervisor')
 
 
 @task
@@ -78,10 +81,29 @@ def install_site():
 
     ''' install configs '''
 
+    supervisor_conf = pkg_resources.resource_filename(__name__,
+                                                      'supervisor.conf')
+    print(blue(supervisor_conf))
+
     with cd('/etc/nginx/'):
         sudo('rm sites-enabled/default')
         sudo('ln -s sites-available/{project_name} '
              'sites-enabled/{project_name}'.format(**env))
+
+
+@task
+def install_configs():
+    pass
+
+
+@task
+def restart_servers():
+    sudo('supervisorctl update')
+
+
+@task
+def data_migration():
+    pass
 
 
 @task

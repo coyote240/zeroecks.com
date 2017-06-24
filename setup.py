@@ -17,9 +17,20 @@ setup(
     url='https://zeroecks.com',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
+    data_files=[
+        ('/zeroecks/conf/', [
+            'conf/config.py',
+            'conf/supervisor.conf',
+            'conf/redis.conf',
+            'conf/nginx.conf',
+            'conf/nginx.site.conf',
+            'conf/flyway.conf'
+        ])
+    ],
     entry_points={
         'console_scripts': [
-            'zeroecks = zeroecks.application:main'
+            'zeroecks = zeroecks.application:main',
+            'zeroecks-install-config = zeroecks:install_config_script'
         ]
     },
     install_requires=[
