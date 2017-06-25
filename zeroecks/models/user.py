@@ -12,7 +12,7 @@ class User(object):
 
     @gen.coroutine
     def authorize(self, userid, password):
-        (salt,) = yield self.get_salt(userid)
+        salt = yield self.get_salt(userid)
         if salt is None:
             return None
 
@@ -33,14 +33,15 @@ class User(object):
 
     @gen.coroutine
     def create(self, userid, password):
-        hashed_password = self.hash_password(password)
+        salt = uuid.uuid4().hex
+        hashed_password = self.hash_password(password, salt)
 
         with self.connection.cursor() as cursor:
             cursor.execute('''
-            insert into site.users (user_name, password)
-            values (%s, %s)
+            insert into site.users (user_name, password, salt)
+            values (%s, %s, %s)
             returning id
-            ''', (userid, hashed_password))
+            ''', (userid, hashed_password, salt))
 
             res = cursor.fetchone()
 
@@ -57,7 +58,9 @@ class User(object):
 
             res = cursor.fetchone()
 
-        return res
+        if res is None:
+            return res
+        return res[0]
 
     @gen.coroutine
     def get_profile(self, userid):
@@ -93,3 +96,28 @@ class User(object):
                                  bytes.fromhex(salt),
                                  100000)
         return binascii.hexlify(dk).decode()
+
+
+def create_user():
+    import argparse
+    import psycopg2
+    from tornado.options import options, define
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('username')
+    parser.add_argument('password')
+    parser.add_argument('--config', required=True)
+    args = parser.parse_args()
+
+    define('dbname', type=str)
+    define('dbuser', type=str)
+    define('dbpass', type=str)
+    options.parse_config_file(args.config)
+
+    dbref = psycopg2.connect(dbname=options.dbname,
+                             user=options.dbuser,
+                             password=options.dbpass)
+    dbref.autocommit = True
+
+    user = User(dbref)
+    user.create(args.username, args.password)

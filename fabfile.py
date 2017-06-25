@@ -12,10 +12,25 @@ env.package_version = pkg_resources.get_distribution(env.project_name).version
 env.flyway_download = 'https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.2.0/flyway-commandline-4.2.0-linux-x64.tar.gz' # noqa
 
 '''
+create database user
+- system user with password
+
+install site config
+- path to templates
+- path to assets
+- database user/pass
+
+supervisord
+- path to config
+- path to startup script
+
 install certbot
 register cert
 install cert
+
 data migrations
+- install conf to <flyway>/conf
+- run
 '''
 
 
@@ -73,11 +88,12 @@ def package_distro():
     local('python setup.py sdist bdist_wheel')
     put(local_path, '{distribution_path}'.format(**env), use_sudo=True)
 
+    sudo('{virtualenv_path}/bin/pip install '
+         '{distribution_path}/{project_name}-{package_version}.tar.gz'.format(**env)) # noqa
+
 
 @task
 def install_site():
-    sudo('{virtualenv_path}/bin/pip install '
-         '{distribution_path}/{project_name}-{package_version}.tar.gz'.format(**env)) # noqa
 
     ''' install configs '''
 

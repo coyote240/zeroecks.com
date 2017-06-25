@@ -17,7 +17,8 @@ def install_config(origin, target):
     path, filename = os.path.split(target)
 
     with cd(path):
-        os.rename(filename, filename + '.bak')
+        if os.path.isfile(filename):
+            os.rename(filename, filename + '.bak')
         with open(filename, 'w') as config:
             config.write(content)
 

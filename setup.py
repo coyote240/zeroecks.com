@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='zeroecks.com',
-    version='0.1.5',
+    version='0.1.7',
     description='zeroecks.com',
     long_description=long_description,
     author='Adam A.G. Shamblin',
@@ -25,11 +25,17 @@ setup(
             'conf/nginx.conf',
             'conf/nginx.site.conf',
             'conf/flyway.conf'
+        ]),
+        ('/zeroecks/sql/', [
+            'sql/V1__articles.sql',
+            'sql/V1_1__publish_articles.sql',
+            'sql/V1_2__users_security.sql'
         ])
     ],
     entry_points={
         'console_scripts': [
             'zeroecks = zeroecks.application:main',
+            'zeroecks-create-user = zeroecks.models.user:create_user',
             'zeroecks-install-config = zeroecks:install_config_script'
         ]
     },
