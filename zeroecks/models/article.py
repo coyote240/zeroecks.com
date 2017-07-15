@@ -1,3 +1,4 @@
+import uuid
 import bleach
 import markdown
 from collections import namedtuple
@@ -17,7 +18,7 @@ class Article(object):
 
         with self.connection.cursor() as cursor:
             cursor.execute('''
-            SELECT  id, author, content, date_created
+            SELECT  alt_id, author, content, date_created
             FROM    site.articles
             WHERE   published = TRUE
             ORDER BY date_created DESC
@@ -28,21 +29,21 @@ class Article(object):
         return articles
 
     @gen.coroutine
-    def load(self, id):
+    def load(self, alt_id):
         Record = namedtuple('Record', '''
             id, author, content, raw_input, date_created
         ''')
 
         with self.connection.cursor() as cursor:
             cursor.execute('''
-            SELECT  id,
+            SELECT  alt_id,
                     author,
                     content,
                     raw_input,
                     date_created
             FROM    site.articles
-            WHERE   id = %s
-            ''', (id,))
+            WHERE   alt_id = %s
+            ''', (alt_id,))
             res = cursor.fetchone()
 
         if res is None:
@@ -57,7 +58,7 @@ class Article(object):
 
         with self.connection.cursor() as cursor:
             cursor.execute('''
-            SELECT  id,
+            SELECT  alt_id,
                     content,
                     date_created,
                     date_updated,
@@ -73,20 +74,22 @@ class Article(object):
 
     @gen.coroutine
     def create(self, author, article, published=False):
+        alt_id = uuid.uuid4().hex
         cleansed_article = self.sanitize(article)
 
         with self.connection.cursor() as cursor:
             cursor.execute('''
-            INSERT INTO site.articles (author, content, raw_input, published)
-            values (%s, %s, %s, %s)
-            RETURNING id
-            ''', (author, cleansed_article, article, published))
+            INSERT INTO site.articles
+                (alt_id, author, content, raw_input, published)
+            values (%s, %s, %s, %s, %s)
+            RETURNING alt_id
+            ''', (alt_id, author, cleansed_article, article, published))
             (article_id,) = cursor.fetchone()
 
         return article_id
 
     @gen.coroutine
-    def update(self, id, article, author, published=False):
+    def update(self, alt_id, article, author, published=False):
         cleansed_article = self.sanitize(article)
 
         with self.connection.cursor() as cursor:
@@ -96,36 +99,36 @@ class Article(object):
                     content = %s,
                     raw_input = %s,
                     published = %s
-            WHERE   id = %s
+            WHERE   alt_id = %s
             AND     author = %s
-            RETURNING id
-            ''', (cleansed_article, article, published, id, author))
+            RETURNING alt_id
+            ''', (cleansed_article, article, published, alt_id, author))
             (article_id,) = cursor.fetchone()
 
         return article_id
 
     @gen.coroutine
-    def delete(self, id, author):
+    def delete(self, alt_id, author):
         with self.connection.cursor() as cursor:
             cursor.execute('''
             DELETE FROM site.articles
-            WHERE   id = %s
+            WHERE   alt_id = %s
             AND     author = %s
-            ''', (id, author))
+            ''', (alt_id, author))
             rowcount = cursor.rowcount
 
         return rowcount
 
     @gen.coroutine
-    def publish(self, id, published, author):
+    def publish(self, alt_id, published, author):
         with self.connection.cursor() as cursor:
             cursor.execute('''
             UPDATE  site.articles
             SET     date_updated = now(),
                     published = %s
-            WHERE   id = %s
+            WHERE   alt_id = %s
             AND     author = %s
-            ''', (published, id, author))
+            ''', (published, alt_id, author))
             rowcount = cursor.rowcount
 
         return rowcount
