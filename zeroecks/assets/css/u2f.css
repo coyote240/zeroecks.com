@@ -1,0 +1,11 @@
+.u2f-flow .message {
+    display: none;
+}
+
+.u2f-flow.unavailable .u2f-form {
+    display: none;
+}
+
+.u2f-flow.unavailable .message {
+    display: block;
+}

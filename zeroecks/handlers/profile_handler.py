@@ -9,6 +9,9 @@ class ProfileHandler(BaseHandler):
     def prepare(self):
         self.user = User(self.dbref)
 
+    def javascript_files(self):
+        return ['js/profile.js']
+
     @authenticated
     @gen.coroutine
     def get(self):
@@ -30,6 +33,24 @@ class ProfileHandler(BaseHandler):
         raise HTTPError(status_code=404,
                         log_message='Profile not found',
                         reason='Profile not found')
+
+    @authenticated
+    @gen.coroutine
+    def post(self):
+        current_password = self.get_argument('current_password')
+        new_password = self.get_argument('new_password')
+        confirm_password = self.get_argument('confirm_password')
+
+        if self.user.authorize(self.current_user, current_password) is None:
+            self.warn('Authentication failed')
+            raise HTTPError(status_code=402,
+                            log_message='User not authorized',
+                            reason='User not authorized')
+
+        if new_password is not confirm_password:
+            raise HTTPError(status_code=400,
+                            log_message='Passwords must match',
+                            reason='Passwords must match')
 
     @gen.coroutine
     def change_password(self, old_pwd, new_pwd):

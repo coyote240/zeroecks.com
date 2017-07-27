@@ -14,7 +14,7 @@ class User(object):
     def authorize(self, userid, password):
         salt = yield self.get_salt(userid)
         if salt is None:
-            return None
+            raise gen.Return(None)
 
         hashed_password = self.hash_password(password, salt)
 
@@ -29,7 +29,11 @@ class User(object):
 
             res = cursor.fetchone()
 
-        return res
+        raise gen.Return(res)
+
+    @gen.coroutine
+    def record_login(self):
+        pass
 
     @gen.coroutine
     def create(self, userid, password):
