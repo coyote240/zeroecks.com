@@ -11,6 +11,7 @@ define('dbname', type=str)
 define('dbuser', type=str)
 define('dbpass', type=str)
 define('session_timeout', type=int, default=86400)
+define('u2f_app_id', type=str)
 
 
 class Application(tornadobase.application.Application):
@@ -50,6 +51,18 @@ class Application(tornadobase.application.Application):
                     handlers.AuthHandler,
                     {'action': 'logout'},
                     name='Logout'),
+            URLSpec(r'/enroll',
+                    handlers.U2FHandler,
+                    name='Enroll'),
+            URLSpec(r'/bind',
+                    handlers.U2FHandler,
+                    name='Bind'),
+            URLSpec(r'/sign',
+                    handlers.U2FHandler,
+                    name='Sign'),
+            URLSpec(r'/verify',
+                    handlers.U2FHandler,
+                    name='Verify'),
             URLSpec(r'/profile',
                     handlers.ProfileHandler,
                     name='Profile')]

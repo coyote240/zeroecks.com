@@ -6,3 +6,43 @@ let module = document.querySelector('.u2f-flow'),
 if (!u2f) {
     module.className = module.className + ' unavailable';
 }
+
+let registerButton = document.querySelector('.enroll');
+registerButton.addEventListener('click', (event) => {
+    'use strict';
+
+    onEnroll().then(
+        (res) => {
+            u2f.register(
+                res.appId,
+                res.registerRequests,
+                res.registeredKeys,
+                (data) => {
+                    console.log(data);
+                });
+        },
+        (error) => {
+            console.log(error);
+        });
+});
+
+function onEnroll () {
+    'use strict';
+
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+
+        xhr.addEventListener('load', (event) => {
+            let res = JSON.parse(xhr.responseText);
+            resolve(res);
+        }, false);
+
+        xhr.addEventListener('error', (event) => {
+            reject(event);
+        }, false);
+
+        xhr.open('GET', '/enroll');
+        xhr.send();
+    });
+}
+
