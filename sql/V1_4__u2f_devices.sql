@@ -5,5 +5,6 @@ CREATE TABLE IF NOT EXISTS u2f_devices (
     version varchar(16) NOT NULL,
     keyHandle text NOT NULL,
     transports varchar(256),
-    appId varchar(256) NOT NULL
+    appId varchar(256) NOT NULL,
+    registration_date timestamp default now()
 );
