@@ -2,10 +2,18 @@
     display: none;
 }
 
-.u2f-flow.unavailable .u2f-form {
+.u2f-flow.unavailable #u2f-form {
     display: none;
 }
 
 .u2f-flow.unavailable .message {
+    display: block;
+}
+
+#deviceResponse + .u2f-submit {
+    display: none
+}
+
+#deviceResponse[value^="{"] + .u2f-submit {
     display: block;
 }
