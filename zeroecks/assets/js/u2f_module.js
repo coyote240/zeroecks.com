@@ -8,7 +8,7 @@ if (!u2f) {
 }
 
 let registerButton = document.querySelector('.enroll');
-registerButton.addEventListener('click', (event) => {
+registerButton.addEventListener('click', event => {
     'use strict';
 
     makeRegisterRequest().then((data) => {
@@ -25,18 +25,29 @@ registerButton.addEventListener('click', (event) => {
     );
 });
 
+let registeredDevices = document.querySelectorAll('.registered-device .delete'),
+    registeredDeviceList = document.querySelector('.registered-device-list'),
+    xsrf_token = registeredDeviceList.dataset.xsrfToken;
+registeredDevices.forEach(dev => {
+    'use strict';
+    dev.addEventListener('click', event => {
+        let target = event.target;
+        deleteRegisteredDevice(target.dataset.key);
+    });
+});
+
 function makeRegisterRequest () {
     'use strict';
 
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();
 
-        xhr.addEventListener('load', (event) => {
+        xhr.addEventListener('load', event => {
             let res = JSON.parse(xhr.responseText);
             resolve(res);
         }, false);
 
-        xhr.addEventListener('error', (event) => {
+        xhr.addEventListener('error', event => {
             reject(event);
         }, false);
 
@@ -81,4 +92,28 @@ function presentKeyForm (tokenResponse) {
 
 function completeRegisterRequest (tokenResponse) {
     'use strict';
+}
+
+function deleteRegisteredDevice (keynick) {
+    'use strict';
+
+    console.log(keynick);
+
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest();
+
+        xhr.addEventListener('load', event => {
+            let res = JSON.parse(xhr.responseText);
+            resolve(res);
+        }, false);
+
+        xhr.addEventListener('error', event => {
+            reject(event);
+        }, false);
+
+        xhr.open('DELETE', '/register');
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('X-XSRFToken', xsrf_token);
+        xhr.send(`key_nick=${keynick}`);
+    });
 }

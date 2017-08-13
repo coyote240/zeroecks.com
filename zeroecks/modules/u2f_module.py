@@ -10,5 +10,7 @@ class U2FModule(UIModule):
     def css_files(self):
         return ['css/u2f.css']
 
-    def render(self):
-        return self.render_string('u2f_module.tmpl.html')
+    def render(self, devices):
+        return self.render_string('u2f_module.tmpl.html',
+                                  xsrf_token=self.handler.xsrf_token,
+                                  devices=devices)

@@ -1,5 +1,19 @@
-<section class="u2f-flow">
-    <a href="javascript:void(0);" class="enroll">[+] Register a new device</a>
+<div class="u2f-flow">
+    <h2>U2F</h2>
+
+    <ul class="registered-device-list" data-xsrf-token="{{ xsrf_token }}">
+    {% for device in devices %}
+    <li class="registered-device"><strong>{{ device.key_nick }}</strong>
+        &mdash; registered on
+        {{ device.registration_date.strftime('%A, %B %d, %Y') }} 
+        <a href="javascript:void(0);"
+            class="delete"
+            data-key="{{ device.key_nick }}">[delete]</a>
+    </li>
+    {% end %}
+    </ul>
+
+    <button class="enroll">Register a new device</button>
     <form id="u2f-form" name="u2f-form" action="/register" method="post">
         {% module xsrf_form_html() %}
         <input type="hidden"
@@ -17,4 +31,4 @@
     <div class="message">
         Your browser does not support U2F.
     </div>
-</section>
+</div>

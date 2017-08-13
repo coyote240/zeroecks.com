@@ -22,8 +22,7 @@
            value="{{ last_login }}"/>
 </form>
 
-<h2>U2F</h2>
-{% module U2FModule() %}
+{% module U2FModule(devices) %}
 
 <h1>Password</h1>
 <h2>Change password</h2>

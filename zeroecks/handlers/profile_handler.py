@@ -1,13 +1,14 @@
 from tornado import gen
 from tornado.web import HTTPError, authenticated
 from . import BaseHandler
-from ..models import User
+from ..models import User, U2F
 
 
 class ProfileHandler(BaseHandler):
 
     def prepare(self):
         self.user = User(self.dbref)
+        self.u2f = U2F(self.dbref)
 
     def javascript_files(self):
         return ['js/profile.js']
@@ -16,6 +17,8 @@ class ProfileHandler(BaseHandler):
     @gen.coroutine
     def get(self):
         profile = yield self.user.get_profile(self.current_user)
+        devices = yield self.u2f.registered_devices(self.current_user)
+
         if profile is not None:
             (userid, keyid, armored_key, verified, date_verified,
              date_created, last_login) = profile
@@ -27,7 +30,8 @@ class ProfileHandler(BaseHandler):
                         verified=verified,
                         date_verified=date_verified,
                         date_created=date_created,
-                        last_login=last_login)
+                        last_login=last_login,
+                        devices=devices)
             return
 
         raise HTTPError(status_code=404,
