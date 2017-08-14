@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='zeroecks.com',
-    version='0.1.7',
+    version='0.1.8',
     description='zeroecks.com',
     long_description=long_description,
     author='Adam A.G. Shamblin',

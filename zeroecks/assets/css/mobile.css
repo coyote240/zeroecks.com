@@ -48,12 +48,10 @@ section.main-content {
 
 section.main-content article {
     padding: 5px;
-    font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
 }
 
 section.main-content article header h1 {
     margin: 0;
-    font-family: 'Arial Black', sans-serif;
 }
 
 section.main-content article p {
