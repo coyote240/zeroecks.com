@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='zeroecks.com',
-    version='0.1.8',
+    version='0.1.9',
     description='zeroecks.com',
     long_description=long_description,
     author='Adam A.G. Shamblin',
@@ -29,7 +29,9 @@ setup(
         ('/zeroecks/sql/', [
             'sql/V1__articles.sql',
             'sql/V1_1__publish_articles.sql',
-            'sql/V1_2__users_security.sql'
+            'sql/V1_2__users_security.sql',
+            'sql/V1_3__article_noncontiguous_ids.sql',
+            'sql/V1_4__u2f_devices.sql'
         ])
     ],
     entry_points={
