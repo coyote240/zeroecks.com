@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='zeroecks.com',
-    version='0.1.9',
+    version='0.1.10',
     description='zeroecks.com',
     long_description=long_description,
     author='Adam A.G. Shamblin',
@@ -30,7 +30,7 @@ setup(
             'sql/V1__articles.sql',
             'sql/V1_1__publish_articles.sql',
             'sql/V1_2__users_security.sql',
-            'sql/V1_3__article_noncontiguous_ids.sql',
+            'sql/V1_3__articles_noncontiguous_ids.sql',
             'sql/V1_4__u2f_devices.sql'
         ])
     ],
@@ -50,6 +50,7 @@ setup(
         'hiredis==0.2.0',
         'Markdown==2.6.8',
         'bleach==2.0.0',
-        'gnupg==2.2.0'
+        'gnupg==2.2.0',
+        'python-u2flib-server==5.0.0'
     ],
     tests_require=['nose'])

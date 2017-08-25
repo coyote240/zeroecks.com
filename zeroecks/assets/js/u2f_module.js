@@ -59,8 +59,6 @@ function makeRegisterRequest () {
 function getTokenResponse (registerData) {
     'use strict';
 
-    console.log(registerData);
-
     return new Promise((resolve, reject) => {
         u2f.register(
             registerData.appId,
@@ -84,8 +82,6 @@ function presentKeyForm (tokenResponse) {
         tokenResponse.version = 'U2F_V2';
     }
 
-    console.log(tokenResponse);
-
     let deviceResponseField = document.getElementById('deviceResponse');
     deviceResponseField.setAttribute('value', JSON.stringify(tokenResponse));
 }
@@ -96,8 +92,6 @@ function completeRegisterRequest (tokenResponse) {
 
 function deleteRegisteredDevice (keynick) {
     'use strict';
-
-    console.log(keynick);
 
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest();

@@ -4,16 +4,19 @@
     <ul class="registered-device-list" data-xsrf-token="{{ xsrf_token }}">
     {% for device in devices %}
     <li class="registered-device"><strong>{{ device.key_nick }}</strong>
-        &mdash; registered on
-        {{ device.registration_date.strftime('%A, %B %d, %Y') }} 
+        &mdash; <time>registered on
+            {{ device.registration_date.strftime('%A, %B %d, %Y') }}</time>
         <a href="javascript:void(0);"
             class="delete"
-            data-key="{{ device.key_nick }}">[delete]</a>
+            data-key="{{ device.key_nick }}">&#128465;</a>
     </li>
     {% end %}
     </ul>
 
     <button class="enroll">Register a new device</button>
+
+    <span class="error">You have already registered this device.</span>
+
     <form id="u2f-form" name="u2f-form" action="/register" method="post">
         {% module xsrf_form_html() %}
         <input type="hidden"
