@@ -1,6 +1,6 @@
 var u2f = u2f || window.u2f || {};
 
-let module = document.querySelector('.u2f-flow'),
+let module = document.querySelector('.u2f-registration'),
     form = module.querySelector('.u2f-form');
 
 if (!u2f) {

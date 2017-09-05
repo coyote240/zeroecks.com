@@ -1,12 +1,12 @@
-.u2f-flow .message {
+.u2f-registration .message {
     display: none;
 }
 
-.u2f-flow.unavailable #u2f-form {
+.u2f-registration.unavailable #u2f-form {
     display: none;
 }
 
-.u2f-flow.unavailable .message {
+.u2f-registration.unavailable .message {
     display: block;
 }
 
