@@ -87,25 +87,3 @@ input[type="submit"] {
 
     border-bottom: 2px solid #708090;
 }
-
-.u2f-flow ul {
-    list-style: none;
-    margin: 1rem 0;
-    padding: 0;
-}
-
-.u2f-flow ul li:before {
-    content: '\1F511\00a0';
-}
-
-.u2f-flow ul li time {
-    color: #708090;
-    font-size: .85rem;
-    font-style: italic;
-    font-family: serif;
-}
-
-.u2f-flow .error {
-    font-size: .85rem;
-    color: red;
-}
