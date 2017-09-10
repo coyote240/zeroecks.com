@@ -60,6 +60,8 @@ class U2F(object):
         self.redis.delete(user)
 
         device, certificate = complete_registration(challenge, device_response)
+        device['user'] = user
+        device['keynick'] = key_nick
 
         with self.dbref.cursor() as cursor:
             cursor.execute('''
@@ -67,12 +69,18 @@ class U2F(object):
                 user_name, key_nick, version, keyhandle, publickey,
                 transports, appid )
             values (%s, %s, %s, %s, %s, %s, %s)
-            ''', (user, key_nick,
+            returning registration_date
+            ''', (device.get('user'),
+                  device.get('keynick'),
                   device.get('version'),
                   device.get('keyHandle'),
                   device.get('publicKey'),
                   device.get('transports'),
                   device.get('appId')))
+
+            (registration_date,) = cursor.fetchone()
+            device['registration_date'] = registration_date.strftime(
+                '%A, %B %d, %Y')
 
             raise gen.Return(device)
 
