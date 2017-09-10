@@ -8,8 +8,12 @@ class U2FModule {
         }
 
         this.registrationForm = new RegistrationForm();
-
         this.initRegisterButton();
+
+        this.errors = {
+            4: 'You have already registered this device.',
+            5: 'Request has timed out.'
+        };
     }
 
     detectU2F () {
@@ -24,6 +28,7 @@ class U2FModule {
         let registerButton = document.querySelector('.enroll');
 
         registerButton.addEventListener('click', event => {
+            this.clearError();
             this.requestRegistration().then(data => {
                 return this.getTokenResponse(data);
             }).then(tokenResponse => {
@@ -32,9 +37,8 @@ class U2FModule {
                 }
                 this.registrationForm.presentKeyForm(tokenResponse);
             }).catch(error => {
-                if (error.errorCode === 4) {
-                    console.log('Device already registered.');
-                }
+                console.log(error);
+                this.displayError(error);
             });
         });
     }
@@ -72,6 +76,22 @@ class U2FModule {
                 });
         });
     }
+
+    displayError (error) {
+        let message = this.errors[error.errorCode] || 'An error has occurred',
+            errorDisplay = document.querySelector('.error');
+
+        this.clearError();
+        errorDisplay.appendChild(
+            document.createTextNode(message));
+    }
+
+    clearError () {
+        let errorDisplay = document.querySelector('.error');
+        errorDisplay.childNodes.forEach(node => {
+            errorDisplay.removeChild(node);
+        });
+    }
 }
 
 class DeviceList {
@@ -82,6 +102,7 @@ class DeviceList {
 
         this.deviceList.querySelectorAll('.registered-device').forEach((item) => {
             let deleteLink = item.querySelector('.delete');
+
             deleteLink.addEventListener('click', event => {
                 let target = event.target,
                     key = target.dataset.key;
@@ -165,6 +186,8 @@ class RegistrationForm {
     presentKeyForm (tokenResponse) {
         let deviceResponseField = document.getElementById('deviceResponse');
         deviceResponseField.setAttribute('value', JSON.stringify(tokenResponse));
+
+        this.form.setAttribute('in-progress');
     }
 
     registerDevice (formData) {
