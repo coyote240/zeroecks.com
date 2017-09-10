@@ -1,0 +1,28 @@
+{
+  "name": "zeroecks.com",
+  "version": "0.10.0",
+  "description": "zeroecks.com",
+  "scripts": {
+    "watch": "webpack --watch",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coyote240/zeroecks.com.git"
+  },
+  "author": "Adam A.G. Shamblin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coyote240/zeroecks.com/issues"
+  },
+  "homepage": "https://zeroecks.com",
+  "dependencies": {
+    "@cycle/dom": "^18.3.0",
+    "@cycle/run": "^3.2.0",
+    "xstream": "^10.9.0"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.16",
+    "webpack": "^3.5.6"
+  }
+}
