@@ -4,6 +4,26 @@ from . import BaseHandler
 from ..models import U2F
 
 
+class U2FDeviceHandler(BaseHandler):
+
+    def prepare(self):
+        self.u2f = U2F(self.dbref)
+
+    @authenticated
+    @gen.coroutine
+    def get(self):
+        devices = yield self.u2f.registered_devices(self.current_user)
+
+        resp = {key.key_nick: {
+            "key_nick": key.key_nick,
+            "publickey": key.publickey,
+            "registration_date": key.registration_date.strftime(
+                '%A, %B %d, %Y')
+        }for key in devices}
+
+        self.write(resp)
+
+
 class U2FAuthHandler(BaseHandler):
 
     @authenticated
@@ -25,7 +45,6 @@ class U2FRegisterHandler(BaseHandler):
     @authenticated
     @gen.coroutine
     def get(self):
-
         challenge = yield self.u2f.get_registration_challenge(
                 self.current_user)
 

@@ -18,6 +18,7 @@
   "homepage": "https://zeroecks.com",
   "dependencies": {
     "@cycle/dom": "^18.3.0",
+    "@cycle/http": "^14.3.0",
     "@cycle/run": "^3.2.0",
     "xstream": "^10.9.0"
   },
