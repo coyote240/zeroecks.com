@@ -1,10 +1,75 @@
+import xs from 'xstream';
+import {run} from '@cycle/run';
+import {a, div, h2, ul, li, button, span, strong, makeDOMDriver} from '@cycle/dom';
+import {makeHTTPDriver} from '@cycle/http';
 import './u2f-api.js';
+
+// READ DOM: registration button
+// WRITE HTTP: request registration
+// READ HTTP: registration response
+// WRITE DOM: display registration form
+// WRITE U2F: u2f registration
+// READ U2F: u2f device response
+
+
+function renderDevice (device) {
+    'use strict';
+
+    return li('.registered_device', [
+        strong(device.key_nick)//,
+        //'&mdash;',
+        //span('registered on ' + device.registration_date),
+        //a('.delete', '&#128465;')
+    ]);
+}
+
+function main (sources) {
+    'use strict';
+
+    const register$ = sources.DOM.select('.enroll').events('click')
+        .map(event =>
+            console.log('clicked', event)
+        );
+
+    const deviceRequest$ = xs.of({
+        url: '/devices',
+        category: 'registeredDevices'});
+
+    const deviceResponse$ = sources.HTTP
+        .select('registeredDevices')
+        .flatten();
+
+    const vdom$ = xs.combine(register$, deviceResponse$)
+        .startWith(null)
+        .map(({register, deviceResponse}) =>
+            div([
+                h2('U2F'),
+                ul('.registered-device-list', deviceResponse.map(dev => {
+                    console.log(dev);
+                    renderDevice(dev);
+                })),
+                button('.enroll', 'Register a new device'),
+                span('.error')
+            ]));
+
+    return {
+        DOM: vdom$,
+        HTTP: deviceRequest$
+    };
+}
+
+const drivers = {
+    DOM: makeDOMDriver('#u2f-registration'),
+    HTTP: makeHTTPDriver()
+};
+
+run(main, drivers);
 
 class U2FModule {
 
     constructor () {
         if(!this.detectU2F()) {
-            let module = document.querySelector('.u2f-registration');
+            let module = document.querySelector('#u2f-registration');
             module.className = module.className + ' unavailable';
             return;
         }
@@ -211,4 +276,4 @@ class RegistrationForm {
     }
 }
 
-new U2FModule();
+//new U2FModule();
