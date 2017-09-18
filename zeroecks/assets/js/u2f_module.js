@@ -1,3 +1,5 @@
+import './u2f-api.js';
+
 class U2FModule {
 
     constructor () {
@@ -209,4 +211,4 @@ class RegistrationForm {
     }
 }
 
-let module = new U2FModule();
+new U2FModule();

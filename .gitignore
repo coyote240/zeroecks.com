@@ -92,3 +92,4 @@ ssl
 dump.rdb
 flyway.conf
 config.py
+node_modules
